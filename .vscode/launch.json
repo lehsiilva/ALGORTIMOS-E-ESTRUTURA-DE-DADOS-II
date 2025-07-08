@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "CDU",
+      "request": "launch",
+      "mainClass": "CDU",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_3a715091"
+    },
+    {
+      "type": "java",
       "name": "Troca",
       "request": "launch",
       "mainClass": "Troca",
