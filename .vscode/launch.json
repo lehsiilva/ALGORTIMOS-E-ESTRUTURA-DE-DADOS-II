@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Troca",
+      "request": "launch",
+      "mainClass": "Troca",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_3a715091"
+    },
+    {
+      "type": "java",
       "name": "Salario",
       "request": "launch",
       "mainClass": "Salario",
