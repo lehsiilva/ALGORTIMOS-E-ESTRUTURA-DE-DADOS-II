@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "lab01Rec",
+      "request": "launch",
+      "mainClass": "lab01Rec",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
+      "name": "lab01",
+      "request": "launch",
+      "mainClass": "lab01",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
