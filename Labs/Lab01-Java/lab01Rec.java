@@ -33,15 +33,15 @@ public class lab01Rec {
 
     public static void main(String[] args) {
         
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
 
-        System.out.println("Digite a palavra");
-        String palavra= scanner.nextLine();
+            System.out.println("Digite a palavra");
+            String palavra= scanner.nextLine();
 
-        maiusculo(scanner,palavra);
+            maiusculo(scanner,palavra);
 
-        scanner.close();
-        
+            scanner.close();
+        }
     }
     
 }

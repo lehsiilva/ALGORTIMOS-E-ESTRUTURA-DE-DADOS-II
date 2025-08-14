@@ -23,22 +23,22 @@ public class lab01 {
 
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Digite a palavra");
-        String palavra= scanner.nextLine();
-
-        
-        
-        while (!palavra.equals("FIM")){ //Equals compara o conteudo de dois objetos
-
-            maiusculo(palavra);
-
+        try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Digite a palavra");
-            palavra= scanner.nextLine();
-        }
+            String palavra= scanner.nextLine();
 
-         scanner.close();
+            
+            
+            while (!palavra.equals("FIM")){ //Equals compara o conteudo de dois objetos
+
+                maiusculo(palavra);
+
+                System.out.println("Digite a palavra");
+                palavra= scanner.nextLine();
+            }
+
+            scanner.close();
+        }
         
     }
     
