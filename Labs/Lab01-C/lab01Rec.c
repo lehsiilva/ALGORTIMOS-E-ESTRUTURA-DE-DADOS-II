@@ -1,39 +1,19 @@
 #include <stdio.h>
 
 
-    char maiusculo(char palavra[]){
-    
-        int cont = 0;
+    int maiusculo(char palavra[], int i){
 
-        while(palavra[cont] != '\0'){
-            cont++;
-        }
-
-        int contar = 0;
-
-        if(palavra[0] == 'F' && palavra[1] == 'I' && palavra[2] == 'M' && palavra[3] == '\0'){
+        if(palavra[i] == '\0'){ // Caso Base
             return 0;
+
+        }else if(palavra[i] >= 65 && palavra[i] <= 90){ 
+            return 1 + maiusculo(palavra, i + 1);// Chamada Recursiva
+
         }else{
-
-            for(int i = 0; i < cont; i++){
-
-                if(palavra[i] >= 65 && palavra[i] <= 90){
-
-                    contar++;
-
-                }
-                
-            }
-
-                printf("Quantidade de Letras MAIUSCULAS: %d",contar);
-
-                printf("\nDigite a palavra: ");
-                scanf("%s", palavra);
-        
-            return maiusculo(palavra); //Chamada Recursiva
+            return maiusculo(palavra, i + 1); // Chamada Recursiva
         }
     }
-
+    
 
     int main(){
 
@@ -41,7 +21,18 @@
         char palavra[100];
         scanf("%s", palavra);
 
-        maiusculo(palavra);
+        while (palavra[0] != 'F' && palavra[1] != 'I' && palavra[2] != 'M' && palavra[3] != '\0'){ 
+        
+            int resp = maiusculo(palavra, 0);
+
+            printf("A palavra possui %d letras maiusculas", resp);
+
+            printf("\n");
+
+            printf("Digite a palavra: ");
+            scanf("%s", palavra);
+
+        }
              
 
         return 0;

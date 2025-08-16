@@ -2,30 +2,16 @@ import java.util.Scanner;
 
 public class lab01Rec {
 
-    public static boolean maiusculo(Scanner scanner, String palavra){
+    public static int maiusculo(String palavra, int i){
         
-        int cont = 0;
+       if(i == palavra.length()){ // Caso base
+            return 0;
 
-       if(palavra.equals("FIM")){
-            return true;
+       }else if(palavra.charAt(i) >= 65 && palavra.charAt(i) <= 90){
+            return 1 + maiusculo(palavra, i + 1); //Chamada recursiva
+
        }else{
-
-            for(int i = 0; i < palavra.length(); i++){
-
-                if(palavra.charAt(i) >= 65 && palavra.charAt(i) <= 90 ){
-
-                    cont++;
-
-                }
-            
-            }
-
-            System.out.println("Quantidade de Letras MAIUSCULAS: " + cont);
-
-            System.out.println("Digite a palavra");
-            palavra= scanner.nextLine();
-
-            return maiusculo(scanner,palavra); //Chamada recursiva
+            return maiusculo(palavra, i + 1); //Chamada recursiva
        }
 
     }
@@ -36,9 +22,17 @@ public class lab01Rec {
         try (Scanner scanner = new Scanner(System.in)) {
 
             System.out.println("Digite a palavra");
-            String palavra= scanner.nextLine();
+            String palavra = scanner.nextLine();
 
-            maiusculo(scanner,palavra);
+            while (!palavra.equals("FIM")){ //Equals compara o conteudo de dois objetos
+
+                int resul = maiusculo(palavra,0);
+
+                System.out.println("A palavra possui " + resul + " letras MAIUSCULAS");
+
+                System.out.println("Digite a palavra");
+                palavra = scanner.nextLine();
+            }
 
             scanner.close();
         }
