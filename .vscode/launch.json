@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Soma",
+      "request": "launch",
+      "mainClass": "Soma",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
+      "name": "Contador",
+      "request": "launch",
+      "mainClass": "Contador",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
       "name": "lab01Rec",
       "request": "launch",
       "mainClass": "lab01Rec",
