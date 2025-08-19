@@ -1,9 +1,15 @@
-# ALGORTIMOS E ESTRUTURA DE DADOS II - C/JAVA
-Exercícios desenvolvidos em C e JAVA para as aulas de Algoritmos e Estruturas de Dados II como forma de praticar meus conhecimentos e aprimorá-los.
-## Tópicos Aprendidos
-- Conceitos Básicos
-- Noções de Complexidade
-- Definição de ploblema e Custo Computacional
-- Pesquisa Sequêncial e Binária
-- Pesquisa em Memória Primaria
-- Somatórios
+# Algoritmos e Estruturas de Dados II — C/Java  
+
+Repositório com exercícios desenvolvidos em **C** e **Java** durante as aulas de **Laboratório e Práticas de Algoritmos e Estruturas de Dados II**.  
+O objetivo é praticar, consolidar e aprimorar os conhecimentos adquiridos nas aulas teóricas e práticas da disciplina.  
+
+## 📚 Conteúdos Abordados  
+- Conceitos básicos de algoritmos e estruturas de dados  
+- Noções de complexidade de algoritmos  
+- Definição de problema e análise de custo computacional  
+- Pesquisa sequencial e binária  
+- Pesquisa em memória primária  
+- Fórmulas de somatórios e aplicações  
+
+## 🎯 Objetivo  
+Este repositório serve como espaço de estudo e prática, registrando minha evolução na disciplina e aplicando os conceitos em códigos funcionais.  
