@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Ciframento",
+      "request": "launch",
+      "mainClass": "Ciframento",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
       "name": "Potencia",
       "request": "launch",
       "mainClass": "Potencia",
