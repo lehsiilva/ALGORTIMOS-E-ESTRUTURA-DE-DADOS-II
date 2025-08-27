@@ -19,30 +19,29 @@ public class Invertido {
         return fim;
     }
 
-    public static String invertido(String palavra){
+    public static String inverterStr(String palavra){
 
-        int tam = palavra.length() - 1;
+        String novaPalavra = "";
 
-        StringBuilder novaPalavra = new StringBuilder(palavra);// Permite alterar cada posição da String
-
-        for(int i = 0; i < palavra.length()/2; i++){
-            char temp = novaPalavra.charAt(i);
-            novaPalavra.setCharAt(i,novaPalavra.charAt(tam)); //Verificar se pode 
-            novaPalavra.setCharAt(tam,temp);
-            tam--;
+        for(int i = palavra.length() - 1; i >= 0; i--){ //Ler a sting de traz pra frente
+            
+            novaPalavra += palavra.charAt(i);
+            
         }
 
-        return novaPalavra.toString();
+        palavra = novaPalavra;
+
+        return palavra ;
     }
     public static void main(String[]args){
-        try(Scanner scanner = new Scanner(System.in)){
+        Scanner scanner = new Scanner(System.in);
 
             String palavra = scanner.nextLine();
 
             while(verificaFim(palavra,"FIM") != true){
-                System.out.println(invertido(palavra));
+                System.out.println(inverterStr(palavra));
                 palavra = scanner.nextLine();
             }
-        }
+        scanner.close();
     }
 }

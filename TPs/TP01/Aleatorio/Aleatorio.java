@@ -3,34 +3,54 @@ import java.util.Scanner;
 
 public class Aleatorio {
 
+    public static Boolean verificaFim(String palavra, String fimPalavra){
+        
+        boolean fim = false;
+
+        if(palavra.length() == fimPalavra.length()){ // Verificar tamanho para comparação
+            fim = true;
+            for(int i = 0; i < fimPalavra.length(); i ++){
+                if(palavra.charAt(i) != fimPalavra.charAt(i)){ //Se houver qualquer coisa diferente já é falso
+                    fim = false;
+                    i = fimPalavra.length();//Parar contador
+                }
+            }
+        }
+
+        return fim;
+    }
+
     public static String sorteio(String palavra, Random gerador){
         
         char a = ((char)('a' + (Math.abs(gerador.nextInt()) % 26)));
         char b = ((char)('a' + (Math.abs(gerador.nextInt()) % 26)));
 
-        StringBuilder novaPalavra = new StringBuilder(palavra); //construir e modificar textos de forma eficiente.
+        String novaPalavra = "";
 
         for(int i = 0; i < palavra.length(); i++){
-            if(novaPalavra.charAt(i) == a){
-                novaPalavra.setCharAt(i, b); //altera diretamente o caractere que está naquela posição
+            
+            if(palavra.charAt(i) == a){
+                novaPalavra += b;
+            }else{
+                novaPalavra += palavra.charAt(i);
             }
         }
 
-        return novaPalavra.toString(); // StringBuilder nao é uma string entt devemos converter 
+        return novaPalavra;  
     }
     public static void main(String[] args){
-        try(Scanner scanner = new Scanner(System.in)){
+        Scanner scanner = new Scanner(System.in);
 
             String palavra = scanner.nextLine();
 
 			Random gerador = new Random();
         	gerador.setSeed(4);
 
-            while(!palavra.equals("FIM")){ 
+            while(verificaFim(palavra,"FIM") != true){ 
                 
                 System.out.println(sorteio(palavra, gerador));
                 palavra = scanner.nextLine();
             }
-        }
+        scanner.close();
     }
 }
