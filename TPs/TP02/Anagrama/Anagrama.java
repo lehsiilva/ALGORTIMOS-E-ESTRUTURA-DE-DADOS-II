@@ -53,13 +53,10 @@ public class Anagrama{
             
             while(!verificaFim(palavra1, "FIM")){
 
+                scanner.next();
                 palavra2 = scanner.next();
 
-                if(verifica(palavra1,palavra2) == true){
-                    System.out.println("SIM");
-                }else{
-                    System.out.println("N\u00C3O");
-                }
+                System.out.println((verifica(palavra1, palavra2)) ? "SIM" : "N\u00C3O");
 
                 palavra1 = scanner.next();
                 
