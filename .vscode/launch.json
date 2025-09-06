@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Inverso",
+      "request": "launch",
+      "mainClass": "Inverso",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
       "name": "Anagrama",
       "request": "launch",
       "mainClass": "Anagrama",
