@@ -1,10 +1,9 @@
-import java.util.Scanner;
 
 public class Selecao {
 
     public static void imprimir(int[]array,int n){
         for(int i = 0; i < n; i++){
-            System.out.print(array[i] + "-");
+            System.out.print(array[i] + " ");
         }
     }
 
@@ -30,12 +29,11 @@ public class Selecao {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
+
         int[] array={2,5,4,1,3};
+        int n = array.length;
 
         select(array,n);
 
-        scanner.close();
     }
 }
