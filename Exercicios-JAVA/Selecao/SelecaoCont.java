@@ -5,9 +5,9 @@ public class SelecaoCont {
         }
     }
 
-    public static void swap(int[]array, int maior, int i){
-        int temp = array[maior];
-        array[maior] = array[i];
+    public static void swap(int[]array, int menor, int i){
+        int temp = array[menor];
+        array[menor] = array[i];
         array[i] = temp;
 
     }
@@ -15,16 +15,18 @@ public class SelecaoCont {
     public static void select(int[] array, int n){
         int cont = 0;
         for(int i = 0; i < (n-1); i++){
-            int maior = i;
+            int menor = i;
             for(int j = i+1; j < n; j++){
-                if(array[j] > array[maior]){
-                    maior = j;
+                if(array[menor] > array[j]){
+                    menor = j;
                 }
             }
-            swap(array,maior,i);
-            cont++;
+            if (menor != i) {
+                swap(array, menor, i);
+                cont++;
+            }
         }
-
+        System.out.println("Contador = " + cont);
         imprimir(array,n);
     }
 
