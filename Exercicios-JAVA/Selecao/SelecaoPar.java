@@ -12,7 +12,7 @@ public class SelecaoPar {
 
     }
 
-    public static void select(int[] array, int n){
+    public static void selection(int[] array, int n){
         for(int i = 0; i < (n-1); i++){
             if(array[i]%2 == 0){
                 int menor = i;
@@ -36,7 +36,7 @@ public class SelecaoPar {
         int[] array={4,5,2,1,3};
         int n = array.length;
 
-        select(array,n);
+        selection(array,n);
 
     }
 }

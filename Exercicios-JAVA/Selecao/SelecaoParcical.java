@@ -1,6 +1,4 @@
-
-public class Selecao {
-
+public class SelecaoParcical {
     public static void imprimir(int[]array,int n){
         for(int i = 0; i < n; i++){
             System.out.print(array[i] + " ");
@@ -14,7 +12,7 @@ public class Selecao {
 
     }
 
-    public static void selection(int[] array, int n){
+    public static void selection(int[] array, int n, int pcl){
         for(int i = 0; i < (n-1); i++){
             int menor = i;
             for(int j = i+1; j < n; j++){
@@ -34,8 +32,9 @@ public class Selecao {
 
         int[] array={2,5,4,1,3};
         int n = array.length;
+        int pcl = 2;
 
-        selection(array,n);
+        selection(array,n, pcl);
 
     }
 }

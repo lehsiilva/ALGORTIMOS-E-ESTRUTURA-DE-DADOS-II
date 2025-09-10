@@ -13,7 +13,7 @@ public class SelecaoDec {
 
     }
 
-    public static void select(int[] array, int n){
+    public static void selection(int[] array, int n){
 
         for(int i = 0; i < (n-1); i++){
             int maior = i;
@@ -36,7 +36,7 @@ public class SelecaoDec {
         int[] array={2,5,4,1,3};
         int n = array.length;
 
-        select(array,n);
+        selection(array,n);
 
     }
 }

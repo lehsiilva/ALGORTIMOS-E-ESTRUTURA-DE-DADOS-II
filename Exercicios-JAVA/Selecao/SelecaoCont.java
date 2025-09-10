@@ -12,7 +12,7 @@ public class SelecaoCont {
 
     }
 
-    public static void select(int[] array, int n){
+    public static void selection(int[] array, int n){
         int cont = 0;
         for(int i = 0; i < (n-1); i++){
             int menor = i;
@@ -35,7 +35,7 @@ public class SelecaoCont {
         int[] array={2,5,4,1,3};
         int n = array.length;
 
-        select(array,n);
+        selection(array,n);
 
     }
 }

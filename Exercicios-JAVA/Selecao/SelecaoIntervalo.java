@@ -12,7 +12,7 @@ public class SelecaoIntervalo {
 
     }
 
-    public static void select(int[] array, int n, int inicio, int fim){
+    public static void selection(int[] array, int n, int inicio, int fim){
         
         for(int i = inicio; i <= fim; i++){
             int menor = i;
@@ -38,7 +38,7 @@ public class SelecaoIntervalo {
         int inicio = 1;
         int fim = 3;
 
-        select(array,n, inicio,fim);
+        selection(array,n, inicio,fim);
 
     }
 }
