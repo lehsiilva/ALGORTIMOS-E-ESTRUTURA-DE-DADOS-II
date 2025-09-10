@@ -22,10 +22,9 @@ public class SelecaoDec {
                     maior = j;
                 }
             }
-            
+
             if (maior != i) {
-            swap(array, maior, i);
-            
+                swap(array, maior, i);
             }
         }
 
