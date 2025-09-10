@@ -1,5 +1,4 @@
-public class SelecaoDec {
-    
+public class SelecaoCont {
     public static void imprimir(int[]array,int n){
         for(int i = 0; i < n; i++){
             System.out.print(array[i] + " ");
@@ -14,7 +13,7 @@ public class SelecaoDec {
     }
 
     public static void select(int[] array, int n){
-
+        int cont = 0;
         for(int i = 0; i < (n-1); i++){
             int maior = i;
             for(int j = i+1; j < n; j++){
@@ -22,11 +21,8 @@ public class SelecaoDec {
                     maior = j;
                 }
             }
-            
-            if (maior != i) {
-            swap(array, maior, i);
-            
-            }
+            swap(array,maior,i);
+            cont++;
         }
 
         imprimir(array,n);
