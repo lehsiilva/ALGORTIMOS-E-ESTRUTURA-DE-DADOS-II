@@ -22,7 +22,9 @@ public class Selecao {
                     menor = j;
                 }
             }
-            swap(array,menor,i);
+            if (menor != i) {
+                swap(array, menor, i);
+            }
         }
 
         imprimir(array,n);
