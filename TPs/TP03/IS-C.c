@@ -1,19 +1,9 @@
-/*Crie um método recursivo que recebe uma string e retorna true se a mesma é composta somente por vogais.
-
-Crie outro método recursivo que recebe uma string e retorna true se a mesma é composta somente por consoantes.
-
-Crie um terceiro método recursivo que recebe uma string e retorna true se a mesma corresponde a um número inteiro.
-
-Crie um quarto método recursivo que recebe uma string e retorna true se a mesma corresponde a um número real.
-
-Na saída padrão, para cada linha de entrada, escreva outra de saída da seguinte forma X1 X2 X3 X4 onde cada Xi é um booleano indicando se a é entrada é: composta somente por vogais (X1); composta somente somente por consoantes (X2); um número inteiro (X3); um número real (X4). Se Xi for verdadeiro, seu valor será SIM, caso contrário, NÃO.*/
-
 #include <stdio.h>
 #include <stdbool.h>
 
 void ler(char palavra[]){
     
-    scanf(" %[^\n]",&palavra);
+    scanf(" %[^\n]", palavra);
     
 }
 
@@ -31,7 +21,7 @@ bool Vogais(char palavra[], int a, int i){
     if(i == a){
         return true;
 
-    }else if(palavra[i] == 'a' || palavra[i] == 'e' || palavra[i] == 'i' || palavra[i] == 'o' || palavra[i] == 'u' || palavra[i] == 'A' || palavra[i] == 'E' || palavra[i] == 'I' || palavra[i] == 'O' || palavra[i] == 'U'){
+    }else if(palavra[i] != 'a'&& palavra[i] != 'e'&& palavra[i] != 'i'&& palavra[i] != 'o'&& palavra[i] != 'u'&& palavra[i] != 'A'&& palavra[i] != 'E'&& palavra[i] != 'I'&& palavra[i] != 'O'&& palavra[i] != 'U'){
 
         return false;
         
@@ -45,7 +35,7 @@ bool Consoantes(char palavra[], int a, int i){
     if(i == a){
         return true;
 
-    }else if(palavra[i] != 'a' || palavra[i] != 'e' || palavra[i] != 'i' || palavra[i] != 'o' || palavra[i] != 'u' || palavra[i] != 'A' || palavra[i] != 'E' || palavra[i] != 'I' || palavra[i] != 'O' || palavra[i] != 'U'){
+    }else if(palavra[i] == 'a' || palavra[i] == 'e' || palavra[i] == 'i' || palavra[i] == 'o' || palavra[i] == 'u' || palavra[i] == 'A' || palavra[i] == 'E' || palavra[i] == 'I' || palavra[i] == 'O' || palavra[i] == 'U' || (palavra[i] >= '0' && palavra[i] <= '9')){
         return false;
         
     }else{
@@ -60,67 +50,66 @@ bool Inteiros(char palavra[], int a, int i){
         return true;
 
     }else if(palavra[i] >= '0' && palavra[i] <= '9'){
-        return false;
+        return Inteiros(palavra,a,i+1);
         
     }else{
-        return Inteiros(palavra,a,i+1);
+        return false;
     }
 }
 
-bool Real(char palavra[], int a, int i){
+bool Real(char palavra[], int a, int i,int ponto){
 
-    int resul;
-    int cont = 0;
+    if(i == a ){
+        return ponto == 1;
 
-    if(i == a){
-        return true;
-
-    }else if(palavra[i] == '.'){
-        cont++;
+    }else if(palavra[i] >= '0' && palavra[i] <= '9'){
+        return Real(palavra,a,i+1,ponto);
         
+    }else if(palavra[i] == '.' && ponto == 0){
+        return Real(palavra,a,i+1,1);
     }else{
-        return Real(palavra,a,i+1);
+        return false;
     }
 
-    if(cont == 1){
-        resul = true;
-    }else{
-        resul = false;
-    }
-
-
-    return resul;
 }
 
 int main(){
-    char palavra[100];
+    char palavra[1000];
     ler(palavra);
 
     while(!(palavra[0] == 'F' && palavra[1] == 'I' && palavra[2] == 'M' && palavra[3] == '\0')){
 
     int a = contador(palavra);
     int i = 0;
-
+    int ponto = 0;
 
         if(Vogais(palavra,a,i) == true){
             printf("SIM ");
+            
         }else{
             printf("NAO ");
+            
         }
         if(Consoantes(palavra,a,i) == true){
             printf("SIM ");
+            
         }else{
             printf("NAO ");
+            
         }
         if(Inteiros(palavra,a,i) == true){
             printf("SIM ");
+            
         }else{
             printf("NAO ");
+            
         }
-        if(Real(palavra,a,i) == true){
+        if(Real(palavra,a,i,ponto) == true){
             printf("SIM ");
+            printf("\n");
         }else{
             printf("NAO ");
+            printf("\n");
         }
 
         ler(palavra);
