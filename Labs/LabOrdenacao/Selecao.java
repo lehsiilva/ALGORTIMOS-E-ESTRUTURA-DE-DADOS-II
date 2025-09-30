@@ -1,3 +1,5 @@
+import Codigos.Geracao;
+
 /**
  * Algoritmo de ordenacao por selecao
  * @author Max do Val Machado

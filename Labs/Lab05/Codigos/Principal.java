@@ -1,6 +1,6 @@
-import Codigos.FirstPivo;
-import Codigos.Geracao;
+import Geracao;
 
+package Codigos;
 /**
  * Classe Principal
  * @author Max do Val Machado
@@ -21,7 +21,10 @@ class Principal {
       //algoritmo = new Heapsort(n);
       //algoritmo = new Insercao(n);
       //algoritmo = new Mergesort(n);
-      algoritmo = new FirstPivo(n);
+      //algoritmo = new FirstPivo(n);
+      //algoritmo = new LastPivo(n);
+      //algoritmo = new RandomPivo(n);
+      algoritmo = new MedianPivo(n);
       //algoritmo = new Radixsort(n);
       //algoritmo = new Selecao(n);
       //algoritmo = new Shellsort(n);

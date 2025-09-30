@@ -1,3 +1,4 @@
+package Codigos;
 /**
  * Geracao de elementos de um array
  * @author Max do Val Machado
@@ -5,8 +6,6 @@
  */
 
 import java.util.*;
-
-import Codigos.MyIO;
 
 class Geracao {
 	protected int[] array;
