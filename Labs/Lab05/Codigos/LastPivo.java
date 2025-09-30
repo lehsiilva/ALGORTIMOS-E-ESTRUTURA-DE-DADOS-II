@@ -1,4 +1,4 @@
-package Codigos;
+
 /**
  * Algoritmo de ordenacao Quicksort
  * @author Max do Val Machado

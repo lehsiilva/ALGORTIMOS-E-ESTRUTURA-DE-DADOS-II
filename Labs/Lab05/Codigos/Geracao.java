@@ -1,4 +1,4 @@
-package Codigos;
+
 /**
  * Geracao de elementos de um array
  * @author Max do Val Machado

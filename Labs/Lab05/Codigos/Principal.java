@@ -1,6 +1,3 @@
-import Geracao;
-
-package Codigos;
 /**
  * Classe Principal
  * @author Max do Val Machado

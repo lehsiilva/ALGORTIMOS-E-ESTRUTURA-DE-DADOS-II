@@ -1,7 +1,5 @@
-package Codigos;
-import java.util.Random;
 
-import Geracao;
+import java.util.Random;
 
 /**
  * Algoritmo de ordenacao Quicksort
