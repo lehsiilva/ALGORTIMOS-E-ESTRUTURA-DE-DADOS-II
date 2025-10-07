@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Produto",
+      "request": "launch",
+      "mainClass": "Produto",
+      "projectName": "ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II_43c29022"
+    },
+    {
+      "type": "java",
       "name": "Principal",
       "request": "launch",
       "mainClass": "Principal",
