@@ -253,7 +253,7 @@ public class Games {
             return tags; 
         }
     
-    private static String arquivo = "../tmp/games.csv"; // Caminho do arquivo CSV
+    private static String arquivo = "/tmp/games.csv"; // Caminho do arquivo CSV
     private static List<String> csv = new ArrayList<>();//Lista para armazenar as linhas do CSV
 
 
@@ -263,13 +263,21 @@ public class Games {
 
     // carrega o arquivo inteiro para a lista csv
     public static void carregarCSV(String arquivo) {
-        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
-            String line;
-            while ((line = br.readLine()) != null) csv.add(line);
-        } catch (IOException e) {
-            System.err.println("Erro ao carregar o arquivo: " + e.getMessage());
+    try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+        String line;
+        boolean primeira = true;
+        while ((line = br.readLine()) != null) {
+            if (primeira) { // pula cabeçalho
+                primeira = false;
+                continue;
+            }
+            csv.add(line);
         }
+    } catch (IOException e) {
+        System.err.println("Erro ao carregar o arquivo: " + e.getMessage());
     }
+}
+
 
     // converte uma linha do CSV em um objeto Games
     public static Games preencher(String line) {
@@ -325,38 +333,38 @@ public class Games {
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int cont = 0;
 
-        // carregar CSV
         carregarCSV(arquivo);
         List<String> lines = Games.getcsv();
 
-        // criar array de objetos
         Games[] games = new Games[lines.size()];
         for (int i = 0; i < lines.size(); i++) {
             games[i] = preencher(lines.get(i));
         }
 
-        // ler entradas até "FIM"
-        String input = scanner.nextLine();
         List<Games> selecionados = new ArrayList<>();
-        
+        String input = scanner.nextLine();
+
         while (!input.equals("FIM")) {
-            int index = Integer.parseInt(input); // supondo que a entrada é índice
-            if (index >= 0 && index < games.length) {
-                selecionados.add(games[index]);
+            int idBuscado = Integer.parseInt(input);
+
+            for (Games g : games) {
+                if (g.getId() == idBuscado) {
+                    selecionados.add(g);
+                }
             }
+
             input = scanner.nextLine();
         }
 
-        // imprimir selecionados
-        for (int i = 0; i < cont; i++){
-            games[i].imprimir();;
+        for (Games g : selecionados) {
+            g.imprimir();
         }
 
         scanner.close();
     }
 }
+
 
 
 /*PERGUNTAS: ENTENDER O METODO DAS DATAS E DAS LINGUAGENS(PRINCIPALMENTE O PQ O [] NAO SAIU PQ NAO SAO DUPLOS, A MAIN OS METODOS IMPORTADS SPRIT, PREENCHER) */
