@@ -10,7 +10,7 @@ void push(int vet[], int *tam, int tamTotal,int valor){
         }
 }
 
-void pop(int vet[], int *tam){
+void pop(int *tam){
     if (*tam == 0) {
             printf("\nFila vazia!");
         } else {
@@ -53,7 +53,7 @@ int main(){
             break;
 
             case 2:
-                pop(vet, &tam);
+                pop(&tam);
             break;
             case 3:
                 mostrar(vet,tam);
