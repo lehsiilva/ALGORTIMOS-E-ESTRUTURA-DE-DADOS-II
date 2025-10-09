@@ -115,13 +115,12 @@ public class Main {
             System.out.println("0 - SAIR");
             System.out.println("1 - INSERIR NORMAL (FIM)");
             System.out.println("2 - INSERIR NO INICIO");
-            System.out.println("3 - INSERIR NO FIM");
-            System.out.println("4 - INSERIR ESCOLHENDO POSIÇÃO");
-            System.out.println("5 - REMOVER INICIO");
-            System.out.println("6 - REMOVER FIM");
-            System.out.println("7 - REMOVER ESCOLHENDO POSIÇÃO");
-            System.out.println("8 - MOSTRAR LISTA");
-            System.out.print("Escolha uma opção: ");
+            System.out.println("3 - INSERIR ESCOLHENDO POSICAO");
+            System.out.println("4 - REMOVER INICIO");
+            System.out.println("5 - REMOVER FIM");
+            System.out.println("6 - REMOVER ESCOLHENDO POSICAO");
+            System.out.println("7 - MOSTRAR LISTA");
+            System.out.print("Escolha uma opcao: ");
 
             opc = scanner.nextInt();
             int valor, posicao;
@@ -138,29 +137,24 @@ public class Main {
                     lista.inserirInicio(valor);
                     break;
                 case 3:
-                    System.out.print("Digite o valor: ");
-                    valor = scanner.nextInt();
-                    lista.inserir(valor); // normal no fim
-                    break;
-                case 4:
                     System.out.print("Digite o valor e a posição: ");
                     System.out.print("Digite a posição: ");
                     valor = scanner.nextInt();
                     posicao = scanner.nextInt();
                     lista.inserirEscolhendo(valor, posicao);
                     break;
-                case 5:
+                case 4:
                     lista.removerInicio();
                     break;
-                case 6:
+                case 5:
                     lista.removerFim();
                     break;
-                case 7:
+                case 6:
                     System.out.print("Digite a posição: ");
                     posicao = scanner.nextInt();
                     lista.removerEscolhendo(posicao);
                     break;
-                case 8:
+                case 7:
                     lista.mostrar();
                     break;
                 case 0:
