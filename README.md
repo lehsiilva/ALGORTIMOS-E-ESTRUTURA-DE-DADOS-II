@@ -9,7 +9,10 @@ O objetivo é praticar, consolidar e aprimorar os conhecimentos adquiridos nas a
 - Definição de problema e análise de custo computacional  
 - Pesquisa sequencial e binária  
 - Pesquisa em memória primária  
-- Fórmulas de somatórios e aplicações  
+- Fórmulas de somatórios e aplicações
+- Algoritmos de Ordenação (Bolha, Inserção, ShellSort, QuickSort, HeapSort, MergeSort, CountingSort, RadixSort)
+- Estruturas de Dados Básicas Lineares (Fila, Lista e Pilha)
+- Estruturas de Dados Básicas Flexíveis (Fila, Lista e Pilha)
 
 ## 🎯 Objetivo  
 Este repositório serve como espaço de estudo e prática, registrando minha evolução na disciplina e aplicando os conceitos em códigos funcionais.  
