@@ -10,7 +10,7 @@ O objetivo é praticar, consolidar e aprimorar os conhecimentos adquiridos nas a
 - Pesquisa sequencial e binária  
 - Pesquisa em memória primária  
 - Fórmulas de somatórios e aplicações
-- Algoritmos de Ordenação (Bolha, Inserção, ShellSort, QuickSort, HeapSort, MergeSort, CountingSort, RadixSort)
+- Algoritmos de Ordenação (Seleção, Bolha, Inserção, ShellSort, QuickSort, HeapSort, MergeSort, CountingSort, RadixSort)
 - Estruturas de Dados Básicas Lineares (Fila, Lista e Pilha)
 - Estruturas de Dados Básicas Flexíveis (Fila, Lista e Pilha)
 
