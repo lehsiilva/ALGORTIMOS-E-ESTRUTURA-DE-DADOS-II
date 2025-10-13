@@ -22,10 +22,11 @@ public class Games {
     private String[] genres;
     private String[] tags;
 
-    public Games() { // Construtor
+    // Construtor
+    public Games() { 
         this.id = 0;
-        this.name = "Unknown";
-        this.releaseDate = "01/01/1900";
+        this.name = " ";
+        this.releaseDate = " ";
         this.estimatedOwners = 0;
         this.price = 0.0f;
         this.supportedLanguages = new String[0];
@@ -48,50 +49,49 @@ public class Games {
         if (!(name == null || name.isEmpty())) {
             this.name = name.trim(); // TRIM: remove espaços no inicio e fim.
         } else {
-            this.name = "Unknown";
+            this.name = " ";
         }
     }
 
     public void setReleaseDate(String arqDate) {
         if (arqDate == null || arqDate.isEmpty()) {
-            this.releaseDate = "01/01/1900";
+            this.releaseDate = " ";
             return;
         }
 
-        arqDate = arqDate.replace("\"", "").trim();
+        arqDate = arqDate.replace("\"", "").trim(); //REPLACE: troca um pelo o outro
 
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
         try {
-            String[] parts = arqDate.split(" ");
+            String[] parts = arqDate.split(" "); //SPLIT: Funciona como um separador
             if (parts.length == 3) {
                 int day = Integer.parseInt(parts[1].replace(",", ""));
                 int month = 0;
 
                 for (int i = 0; i < months.length; i++) {
-                    month = (parts[0].startsWith(months[i])) ? i + 1 : month;
+                    month = (parts[0].startsWith(months[i])) ? i + 1 : month; //StartsWith: Analisa o começo das palavras
                 }
 
                 String year = parts[2];
                 this.releaseDate = String.format("%02d/%02d/%s", day, month, year);
                 return;
             }
-        } catch (Exception e) {
-            // fallback
-        }
+        } catch (Exception e) {}
 
+        //Tratamento datas a
         String[] parts = arqDate.split("/");
-        if (parts.length == 1) {
+        if(parts.length == 1){
             this.releaseDate = "01/01/" + parts[0];
         } else if (parts.length == 2) {
-            String mes = String.format("%02d", Integer.parseInt(parts[0]));
+            int mes = Integer.parseInt(parts[0]);
             this.releaseDate = "01/" + mes + "/" + parts[1];
         } else if (parts.length == 3) {
-            String dia = String.format("%02d", Integer.parseInt(parts[0]));
-            String mes = String.format("%02d", Integer.parseInt(parts[1]));
+            int dia = Integer.parseInt(parts[0]);
+            int mes = Integer.parseInt(parts[1]);
             this.releaseDate = dia + "/" + mes + "/" + parts[2];
         } else {
-            this.releaseDate = "01/01/1900";
+            this.releaseDate =  " ";
         }
     }
 
@@ -99,7 +99,7 @@ public class Games {
         if (arqOwners == null || arqOwners.isEmpty()) {
             this.estimatedOwners = 0;
         } else {
-            arqOwners = arqOwners.replaceAll("[^0-9]", "");
+            arqOwners = arqOwners.replaceAll("[^0-9]", "");//REPLACEALL: remove tudo exceto números
             this.estimatedOwners = Integer.parseInt(arqOwners);
         }
     }
@@ -188,7 +188,7 @@ public class Games {
 
     public void setGenres(String arqGenres) {
         if (arqGenres == null || arqGenres.isEmpty()) {
-            this.genres = new String[0]; // corrigido: antes sobrescrevia categories
+            this.genres = new String[0]; 
             return;
         }
         String[] parts = arqGenres.split(",");
@@ -263,16 +263,14 @@ public class Games {
 
     // carrega o arquivo inteiro para a lista csv
     public static void carregarCSV(String arquivo) {
-    try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+        
+        br.readLine(); // Lê e ignora o cabeçalho
         String line;
-        boolean primeira = true;
         while ((line = br.readLine()) != null) {
-            if (primeira) { // pula cabeçalho
-                primeira = false;
-                continue;
-            }
             csv.add(line);
         }
+        
     } catch (IOException e) {
         System.err.println("Erro ao carregar o arquivo: " + e.getMessage());
     }
@@ -300,22 +298,25 @@ public class Games {
         return g;
     }
 
+    //divide uma única linha do CSV em um array de strings
     public static String[] ler(String line) {
         List<String> result = new ArrayList<>();
-        boolean inQuotes = false;
-        StringBuilder sb = new StringBuilder();
+        boolean aspas = false;
+        StringBuilder str = new StringBuilder();
 
-        for (char c : line.toCharArray()) {
+        // alterna o valor de aspas para lidar com campos entre aspas
+        for (int i = 0; i < line.length(); i++) {
+             char c = line.charAt(i);
             if (c == '"') {
-                inQuotes = !inQuotes;
-            } else if (c == ',' && !inQuotes) {
-                result.add(sb.toString().trim());
-                sb = new StringBuilder();
+                aspas = !aspas;
+            } else if (c == ',' && !aspas) {
+                result.add(str.toString().trim());
+                str = new StringBuilder();
             } else {
-                sb.append(c);
+                str.append(c);
             }
         }
-        result.add(sb.toString().trim());
+        result.add(str.toString().trim());
         return result.toArray(new String[0]);
     }
 
@@ -348,7 +349,8 @@ public class Games {
         while (!input.equals("FIM")) {
             int idBuscado = Integer.parseInt(input);
 
-            for (Games g : games) {
+            for(int i = 0; i < games.length; i++) {
+                Games g = games[i];
                 if (g.getId() == idBuscado) {
                     selecionados.add(g);
                 }
@@ -357,14 +359,10 @@ public class Games {
             input = scanner.nextLine();
         }
 
-        for (Games g : selecionados) {
-            g.imprimir();
+        for(int i = 0; i < selecionados.size(); i++) {
+            selecionados.get(i).imprimir();
         }
 
         scanner.close();
     }
 }
-
-
-
-/*PERGUNTAS: ENTENDER O METODO DAS DATAS E DAS LINGUAGENS(PRINCIPALMENTE O PQ O [] NAO SAIU PQ NAO SAO DUPLOS, A MAIN OS METODOS IMPORTADS SPRIT, PREENCHER) */
