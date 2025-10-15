@@ -1,8 +1,8 @@
-//Faça um metodo que retorne o maior elemento da fila
+//Faça um metodo que mostre a soma dos elementos da fila
 
 import java.util.Scanner;
 
-public class MaiorElementoFila {
+public class SomaElementosFila {
     class Celula{
         private int valor;
         private Celula proximo;
@@ -20,7 +20,7 @@ public class MaiorElementoFila {
     private Celula inicio;
     private Celula fim;
 
-    public MaiorElementoFila(){
+    public SomaElementosFila() {
         this.inicio = null;
         this.fim = null;
     }
@@ -42,43 +42,38 @@ public class MaiorElementoFila {
     }
 
     public int dequeue(){
-    
-        if(inicio == null){
+        if(this.inicio == null){
+            this.fim = null;
             System.out.println("Fila Vazia");
         }
 
-        int valorRemovido = this.inicio.getValor();
+        int celulaRemovida = this.inicio.getValor();
         this.inicio = this.inicio.proximo;
 
-        if(this.inicio == null){
-            this.fim = null;
-        }
-
-        return valorRemovido;
+        return celulaRemovida;
     }
 
-    public int maior(){
-        Celula i = this.inicio;
-        int maior = i.getValor();
+    public int soma(){
+
+        Celula i = inicio;
+        int soma = 0;
 
         while(i != null){
-
-            if(i.getValor() > maior){
-                maior = i.getValor();
-            }
+            soma += i.getValor();
 
             i = i.proximo;
         }
 
-        return maior;
+        return soma;
+
     }
 
     public void mostrar(){
-        if(inicio == null){
+        Celula i = inicio;
+
+        if(this.inicio == null){
             System.out.println("Fila Vazia");
         }else{
-            Celula i = inicio;
-
             System.out.print("Fila: ");
             while(i != null){
                 System.out.print(i.getValor() + " ");
@@ -93,7 +88,8 @@ public class MaiorElementoFila {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        MaiorElementoFila fila = new MaiorElementoFila();
+        SomaElementosFila fila = new SomaElementosFila();
+
         int opc;
 
         do { 
@@ -101,7 +97,7 @@ public class MaiorElementoFila {
             System.out.println("Digite 0 para SAIR");
             System.out.println("Digite 1 para INSERIR");
             System.out.println("Digite 2 para DELETAR");
-            System.out.println("Digite 3 para MOSTRAR MAIOR");
+            System.out.println("Digite 3 para MOSTRAR SOMA");
             System.out.println("Digite 4 para MOSTRAR");
             System.out.print("Escolha uma opcao: ");
 
@@ -120,8 +116,8 @@ public class MaiorElementoFila {
                     break;
                 }
                 case 3:{
-                    int resul = fila.maior();
-                    System.out.println("Maior Valor: " + resul);
+                    int resul = fila.soma();
+                    System.out.println("Soma: " + resul);
                     break;
                 }
                 case 4:
@@ -134,5 +130,4 @@ public class MaiorElementoFila {
         } while (opc != 0);
 
     }
-
 }
