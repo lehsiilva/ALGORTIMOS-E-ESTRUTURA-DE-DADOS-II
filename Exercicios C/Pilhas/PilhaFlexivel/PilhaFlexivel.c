@@ -3,66 +3,58 @@
 
 typedef struct Celula{
     int valor;
-    struct Celula *proximo;
-
+    struct Celula *px;
 }Celula;
 
-typedef struct{
-
+typedef struct Pilha{
     Celula *topo;
+}Pilha;
 
-}PilhaFlexivel;
-
-PilhaFlexivel* criarPilha() { // "Construtor"
-   
-    PilhaFlexivel *novaPilha = (PilhaFlexivel*)malloc(sizeof(PilhaFlexivel));  // Aloca espaço para a estrutura PilhaFlexivel
-    
-    novaPilha->topo = NULL; 
-
-    return novaPilha;
+Pilha *criarPilha(){ // "Construtor"
+    Pilha *pilha = (Pilha*)malloc(sizeof(Pilha));
+    pilha->topo = NULL;
+    return pilha;
 }
 
-void push(PilhaFlexivel *pilha, int x){
-
-    Celula* celula = (Celula*)malloc(sizeof(Celula));
+void push(Pilha *pilha, int x){
+    Celula *celula = (Celula*)malloc(sizeof(Celula));
     celula->valor = x;
-    celula->proximo = pilha->topo;
+    celula->px = pilha->topo;
     pilha->topo = celula;
 }
 
-int pop(PilhaFlexivel *pilha){
+int pop(Pilha *pilha){
+    Celula *celulaRemovida = (Celula*)malloc(sizeof(Celula));
 
     if(pilha->topo == NULL){
-        printf("Pilha Vazia");
+        printf("Pilha Vazia!");
+        return -1;
     }
 
     int valorRemovido = pilha->topo->valor;
-    Celula* celulaRemovida = (Celula*)malloc(sizeof(Celula));
-    celulaRemovida = pilha->topo;
-    pilha->topo = pilha->topo->proximo;
-    
+    pilha->topo = pilha->topo->px;
     free(celulaRemovida);
 
     return valorRemovido;
 
 }
 
-void mostrar(PilhaFlexivel *pilha){
-
+void mostrar(Pilha *pilha){
     Celula *i = pilha->topo;
 
     printf("Pilha: ");
     while(i != NULL){
         printf("%d ", i->valor);
+        i = i->px;
+    }  
 
-        i = i->proximo;
-    }
+    printf("\n");
 }
 
 
 int main(){
     
-    PilhaFlexivel *pilhaFlexivel = criarPilha();
+    Pilha *pilha = criarPilha();
     int opc;
 
     do { 
@@ -80,16 +72,16 @@ int main(){
                     printf("\nDigite o valor: ");
                     int valor; 
                     scanf("%d", &valor);
-                    push(pilhaFlexivel,valor);
+                    push(pilha,valor);
                     break;
             }
                 case 2:{
-                    int resul = pop(pilhaFlexivel);
+                    int resul = pop(pilha);
                     printf("\nValor removido: %d", resul);
                     break;
             }
                 case 3:
-                    mostrar(pilhaFlexivel);
+                    mostrar(pilha);
                     break;
         }
             

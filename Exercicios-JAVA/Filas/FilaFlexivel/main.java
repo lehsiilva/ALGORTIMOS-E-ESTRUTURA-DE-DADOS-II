@@ -1,67 +1,56 @@
 import java.util.Scanner;
+class Celula{
+    private int valor;
+    Celula proximo;
 
-public class FilaFlexivel {
-    class Celula{
-        private int valor;
-        private Celula proximo;
-
-        public Celula(int valor){
-            this.valor = valor;
-            this.proximo = null;
-        }
-
-        public int getValor(){
-            return valor;
-        }
+    public Celula(){
+        this(0);
     }
 
+    public Celula(int valor){
+        this.valor = valor;
+        this.proximo = null;
+    }
+
+    public int getValor(){
+        return valor;
+    }
+}
+
+class FilaFlexivel{
     private Celula inicio;
     private Celula fim;
 
     public FilaFlexivel(){
-        this.inicio = null;
-        this.fim = null;
+        inicio = new Celula();
+        fim = inicio;
     }
 
     public void enqueue(int valor){
 
-        Celula celula = new Celula(valor);
-
-        if(inicio == null){
-
-            inicio = celula;
-
-        }else{
-
-            fim.proximo = celula;
-        }
-
-        fim = celula;
+        fim.proximo = new Celula(valor);
+        fim = fim.proximo;
     }
 
     public int dequeue(){
-        if(this.inicio == null){
+        if(inicio == fim){
             System.out.println("Fila Vazia");
         }
 
-        int valor = this.inicio.getValor();
-        this.inicio = this.inicio.proximo;
-
-        if(this.inicio == null){
-            this.fim = null;
-        }
-
+        Celula tmp = inicio.proximo;
+        int valor = tmp.getValor();
+        inicio.proximo = tmp.proximo;
 
         return valor;
 
     }
 
     public void mostrar(){
-        if(inicio == null){
+        if(inicio == fim){
             System.out.println("Fila Vazia");
         }
 
-        Celula i = inicio;
+        Celula i = inicio.proximo;
 
         System.out.print("Fila: ");
         while(i != null){
@@ -70,8 +59,9 @@ public class FilaFlexivel {
         }
         System.out.println();
     }
+}
 
-
+public class main{
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -89,25 +79,22 @@ public class FilaFlexivel {
             opc = scanner.nextInt();
 
             switch(opc) {
-                case 1:{
+                case 1 -> {
                     System.out.print("Digite o valor: ");
                     int valor = scanner.nextInt();
                     fila.enqueue(valor);
-                    break;
                 }
-                case 2:{
+                case 2 -> {
                     int resul = fila.dequeue();
                     System.out.println("Valor removido: " + resul);
-                    break;
                 }
-                case 3:
-                    fila.mostrar();
-                    break;
-                default:
-                    throw new AssertionError();
+                case 3 -> fila.mostrar();
+                default -> throw new AssertionError();
             }
             
         } while (opc != 0);
+
+        scanner.close();
 
     }
 

@@ -13,66 +13,55 @@ typedef struct FilaFlexivel{
 
 }FilaFlexivel;
 
-FilaFlexivel *criarFila(){ // "Construtor"
-
+FilaFlexivel *criarFila(){ // "Construtor" celula cabeca
     FilaFlexivel *fila = (FilaFlexivel*)malloc(sizeof(FilaFlexivel));
+    Celula *cabeca = (Celula*)malloc(sizeof(Celula));
+    cabeca->valor = 0;
+    cabeca->proximo = NULL;
 
-    fila->inicio = NULL;
-    fila->fim = NULL;
+    fila->inicio= cabeca;
+    fila->fim = fila->inicio;
 
     return fila;
+    
 }
 
-void enqueue(FilaFlexivel *fila, int valor){
-
+void enqueue(FilaFlexivel *fila, int x){
     Celula *celula = (Celula*)malloc(sizeof(Celula));
-
-    celula->valor = valor;
+    celula->valor = x;
     celula->proximo = NULL;
 
-    if(fila->inicio == NULL){
-        fila->inicio = celula;
-    }else{
-        fila->fim->proximo = celula;
-    }
-
+    fila->fim->proximo = celula;
     fila->fim = celula;
+    
 }
 
 int dequeue(FilaFlexivel *fila){
-
-    if(fila->inicio == NULL){
-        printf("\nFila Vazia");
+    if(fila->inicio == fila->fim){
+        printf("Fila vazia!");
     }
+    Celula *tmp = fila->inicio->proximo;
+    int valorRemover = tmp->valor;
+    fila->inicio->proximo = tmp->proximo;
 
-    Celula *celulaRemovida = fila->inicio;
-    int valorRemovido = celulaRemovida->valor;
-    fila->inicio = fila->inicio->proximo;
-
-    if (fila->inicio == NULL) {
-        fila->fim = NULL;
-    }
-
-    free(celulaRemovida);
-
-    return valorRemovido;
+    free(tmp);
+    
+    return valorRemover;
 }
 
 void mostrar(FilaFlexivel *fila){
-
-    if(fila->inicio == NULL){
-        printf("\nFila Vazia");
+    if(fila->inicio == fila->fim){
+        printf("Fila vazia!");
     }
 
-    Celula *i = fila->inicio;
-
+    Celula *i = fila->inicio->proximo;
     printf("Fila: ");
-
     while(i != NULL){
         printf("%d ", i->valor);
-
         i = i->proximo;
     }
+    printf("\n");
+    
 }
 
 int main(){

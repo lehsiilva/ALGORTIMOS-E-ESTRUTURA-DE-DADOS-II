@@ -41,6 +41,39 @@ public class SomaElementosFila {
         fim = celula;
     }
 
+    public void inverter(){
+
+        if (this.inicio == null || this.inicio == this.fim) {
+            return;
+        }
+
+    
+        Celula anterior = null;
+        Celula atual = this.inicio;
+        Celula proximo = null;
+
+        
+        Celula novoFim = this.inicio;
+
+        
+        while (atual != null) {
+            
+            proximo = atual.proximo; 
+            
+          
+            atual.proximo = anterior; 
+            
+        
+            anterior = atual;
+            atual = proximo;
+        }
+
+       
+        this.inicio = anterior; 
+        this.fim = novoFim; 
+
+    }
+
     public int dequeue(){
         if(this.inicio == null){
             this.fim = null;
