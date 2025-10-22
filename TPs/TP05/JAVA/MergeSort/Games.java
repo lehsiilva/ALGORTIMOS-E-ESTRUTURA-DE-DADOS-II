@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import PesquisaBinaria.Games;
-
 class Log {
    public static String logFileName = "874205_mergesort.txt"; 
     public static final String MATRICULA = "874205"; 
