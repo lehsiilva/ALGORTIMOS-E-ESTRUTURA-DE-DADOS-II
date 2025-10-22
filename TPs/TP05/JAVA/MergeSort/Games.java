@@ -474,9 +474,7 @@ public class Games {
             System.out.println("| 5 pre\u00E7os mais baratos |");
             for (int i = 0; i < Math.min(5, N); i++) {
                 gamesParaOrdenar[i].imprimir();
-            }
-
-            
+            }    
         }
     }
 }
