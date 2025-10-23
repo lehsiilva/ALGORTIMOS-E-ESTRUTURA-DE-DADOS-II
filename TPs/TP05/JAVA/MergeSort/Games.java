@@ -1,34 +1,21 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-class Log {
-   public static String logFileName = "874205_mergesort.txt"; 
-    public static final String MATRICULA = "874205"; 
-    public static long comparacoes = 0; 
-    public static long movimentacoes = 0; 
-    public static double tempoExecucao = 0; 
-
-    public static void registrarLog(String log) {
-        String tempoFormatado = String.format("%.2f", tempoExecucao);
-        
-        try (PrintWriter writer = new PrintWriter(new FileWriter(log))) {
-            writer.printf("%s\t%d\t%d\t%s\n", MATRICULA, comparacoes, movimentacoes, tempoFormatado);
-        } catch (IOException e) {
-            System.err.println("Erro ao escrever no arquivo de log: " + e.getMessage());
-        }
-    }
-    public static String getMATRICULA() {
-        return MATRICULA;
-    }
-}
-
 public class Games {
+
+    public static String log = "874205_mergesort.txt";
+    public static int matricula = 874205;
+    public static long comparacoes = 0;
+    public static long movimentacoes = 0;
+    public static double tempoEmSegundos = 0.0; 
+
     private int id;
     private String name;
     private String releaseDate;
@@ -348,8 +335,12 @@ public class Games {
     }
 
     public void imprimir() {
+        DecimalFormat df = new DecimalFormat("0.0#"); //Padrao de formatação para o preço
+        
+        String priceFormatado = df.format(this.getPrice()); //Padrao aplicado ao preço ex: 59.99 e 0.0
+
         System.out.println("=> " + this.getId() + " ## " + this.getName() + " ## " + this.getReleaseDate() + " ## " +
-                this.getEstimatedOwners() + " ## " + String.format("%.2f", this.getPrice()) + " ## " +
+                this.getEstimatedOwners() + " ## " + priceFormatado + " ## " +
                 java.util.Arrays.toString(this.getSupportedLanguages()) + " ## " +
                 this.getMetacriticScore() + " ## " + String.format("%.1f", this.getUserScore()) + " ## " +
                 this.getAchievements() + " ## " +
@@ -360,19 +351,22 @@ public class Games {
                 java.util.Arrays.toString(this.getTags()) + " ##");
     }
 
+    //Para comparar dois jogos e definir a ordem no mergesort
     public static int compare(Games g1, Games g2) {
-        Log.comparacoes++;
+        Games.comparacoes++; // Contador
         if (g1.getPrice() != g2.getPrice()) {
             return Float.compare(g1.getPrice(), g2.getPrice());
         }
         return Integer.compare(g1.getId(), g2.getId());
     }
 
+    //Cria o array temporário necessário e chama o método privado recursivo.
     public static void mergesort(Games[] array) {
         Games[] tmp = new Games[array.length];
         mergesort(array, tmp, 0, array.length - 1);
     }
 
+    //Divide o array em duas metades até chegar a sub-arrays de tamanho 1
     private static void mergesort(Games[] array, Games[] tmp, int esq, int dir) {
         if (esq < dir) {
             int meio = (esq + dir) / 2;
@@ -382,30 +376,33 @@ public class Games {
         }
     }
 
+    //Para fazer a mesclagem dos subarrays ordenados
     private static void merge(Games[] array, Games[] tmp, int esq, int meio, int dir) {
         int i = esq, j = meio + 1, k = esq;
 
+        // Cópia para o array temporário
         for (int p = esq; p <= dir; p++) {
             tmp[p] = array[p];
         }
 
         while (i <= meio && j <= dir) {
+            // Conta comparação
             if (compare(tmp[i], tmp[j]) <= 0) {
                 array[k++] = tmp[i++];
             } else {
                 array[k++] = tmp[j++];
             }
-            Log.movimentacoes++;
+            Games.movimentacoes++; 
         }
 
         while (i <= meio) {
             array[k++] = tmp[i++];
-            Log.movimentacoes++;
+            Games.movimentacoes++; //conta movimentações
         }
 
         while (j <= dir) {
             array[k++] = tmp[j++];
-            Log.movimentacoes++;
+            Games.movimentacoes++; 
         }
     }
 
@@ -447,21 +444,23 @@ public class Games {
 
         Games[] gamesParaOrdenar = selecionados.toArray(new Games[0]);
 
-        Log.comparacoes = 0;
-        Log.movimentacoes = 0;
+        Games.comparacoes = 0;
+        Games.movimentacoes = 0;
 
         long startTime = System.nanoTime();
         mergesort(gamesParaOrdenar);
         long endTime = System.nanoTime();
 
-        Log.tempoExecucao = (endTime - startTime) / 1000000.0; 
+        Games.tempoEmSegundos = (endTime - startTime) / 1e6; 
         
-        String logFileName = Log.getMATRICULA() + "_mergesort.txt";
-        
-        // Chamada de log
-        Log.registrarLog(logFileName);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(Games.log))) {
+            bw.write(String.format("%d\t%d\t%d\t%.2f\n", Games.matricula, Games.comparacoes, Games.movimentacoes, Games.tempoEmSegundos));
+        }
+        catch(Exception e) {
+             System.err.println("Erro ao escrever no arquivo de log: " + e.getMessage());
+        }
 
-        int N = gamesParaOrdenar.length;
+        int N = gamesParaOrdenar.length; //ordena os 5 mais caros e os 5 mais baratos entre os selecionados
 
         if (N > 0) {
             System.out.println("| 5 pre\u00E7os mais caros |");
