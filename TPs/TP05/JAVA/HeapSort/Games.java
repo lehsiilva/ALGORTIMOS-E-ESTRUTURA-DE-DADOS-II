@@ -338,7 +338,7 @@ public class Games {
             java.util.Arrays.toString(this.getDevelopers()) + " ## " +
             java.util.Arrays.toString(this.getCategories()) + " ## " +
             java.util.Arrays.toString(this.getGenres()) + " ## " +
-            java.util.Arrays.toString(this.getTags()) + " ## ");
+            java.util.Arrays.toString(this.getTags()) + " ##");
     }
 
     //Para comparar dois jogos e decidir qual tem maior prioridade ou qual deve vir primeiro no array ordenado.
