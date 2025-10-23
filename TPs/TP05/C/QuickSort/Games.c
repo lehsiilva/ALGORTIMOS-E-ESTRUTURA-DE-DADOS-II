@@ -3,12 +3,18 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h> 
+#include <time.h>
 
 #define MAX_GAMES 1000
 #define MAX_STR 64
 #define MAX_LINE 4096
 #define MAX_ARRAY_ITEM 50 
 #define CSV_PATH "/tmp/games.csv" 
+#define MATRICULA "874205" 
+
+// Variáveis globais para o log
+long long comparacoes = 0;
+long long movimentacoes = 0;
 
 typedef struct {
     int id;
@@ -32,6 +38,12 @@ typedef struct {
     char tags[MAX_ARRAY_ITEM][MAX_STR];
     int tagsCount;
 } Games;
+
+void criar_log(double tempo_execucao);
+void swap(Games *g1, Games *g2);
+int compare(const Games *g1, const Games *g2);
+int partition(Games arr[], int low, int high);
+void quickSort(Games arr[], int low, int high);
 
 // função para remover espaços em branco do início e do fim
 void trim(char *s) {
@@ -348,7 +360,8 @@ void Games_imprimir(const Games *g) {
     for(int j = 0; j < g->tagsCount; j++){
         printf("%s%s", g->tags[j], (j < g->tagsCount - 1) ? ", " : "");
     }
-        printf("] ## \n");
+        printf("] ##");
+        printf("\n");
 }
 
 // função para buscar um jogo pelo ID
@@ -394,6 +407,73 @@ int ler_registro_csv(FILE *fp, char *buffer, size_t bufsize) {
         buffer[--len] = '\0';
     }
     return (buffer[0] != '\0');
+}
+
+//Compara dois jogos pelo releaseDate e id como critério secundário
+int compare(const Games *g1, const Games *g2) {
+
+    int day1, month1, year1;
+    sscanf(g1->releaseDate, "%d/%d/%d", &day1, &month1, &year1);
+
+    int day2, month2, year2;
+    sscanf(g2->releaseDate, "%d/%d/%d", &day2, &month2, &year2);
+
+    // Compara ano
+    if (year1 != year2) {
+        return year1 - year2;
+    }
+    // Compara mês
+    if (month1 != month2) {
+        return month1 - month2;
+    }
+    // Compara dia
+    if (day1 != day2) {
+        return day1 - day2;
+    }
+
+    return g1->id - g2->id;
+}
+
+void swap(Games *g1, Games *g2) {
+    Games temp = *g1;
+    *g1 = *g2;
+    *g2 = temp;
+    movimentacoes += 3;
+}
+
+//Realiza a partição do sub-array em torno de um pivô
+int partition(Games array[], int inicio, int fim) {
+    Games pivot = array[fim];
+    int i = (inicio - 1);
+
+    for (int j = inicio; j < fim; j++) {
+        comparacoes++;
+        if (compare(&array[j], &pivot) <= 0) {
+            i++;
+            swap(&array[i], &array[j]);
+        }
+    }
+    swap(&array[i + 1], &array[fim]);
+    return (i + 1);
+}
+
+void quickSort(Games array[], int inicio, int fim) {
+    if (inicio < fim) {
+        int indice = partition(array, inicio, fim);
+
+        quickSort(array, inicio, indice - 1);
+        quickSort(array, indice + 1, fim);
+    }
+}
+
+void criar_log(double tempo_execucao) { // Cria o arquivo de log
+    FILE *log_fp = fopen(MATRICULA "_quicksort.txt", "w");
+    if (log_fp == NULL) {
+        fprintf(stderr, "Erro ao criar arquivo de log.\n");
+        return;
+    }
+    fprintf(log_fp, "%s\t%lld\t%lld\t%.2lf\n", MATRICULA, comparacoes, movimentacoes, tempo_execucao);
+    fclose(log_fp);
 }
 
 int main() {
@@ -489,10 +569,27 @@ int main() {
     }
     
    
+    clock_t start, end; // Variáveis para medir o tempo de execução
+    double tempoExecucao;
+
+    comparacoes = 0;
+    movimentacoes = 0;
+
+    start = clock();
+
+    quickSort(selected_games, 0, selected_games_count - 1); 
+
+    end = clock();
+
+    tempoExecucao = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC; 
+
+    criar_log(tempoExecucao); 
+
+
     for(int i = 0; i < selected_games_count; i++) {
         Games_imprimir(&selected_games[i]);
     }
-  
+
     free(all_games);
     free(selected_games);
 

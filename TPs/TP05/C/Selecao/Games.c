@@ -556,6 +556,12 @@ int main() {
         Games_imprimir(&selected_games[i]);
     }
 
+    FILE *log = fopen("874205_quicksort.txt", "w");
+        if (log) {
+            fprintf(log, MATRICULA"\t%d\t%.2f\n", comparacoes, movimentacoes, tempoExecucao);
+            fclose(log);
+        }
+
     free(all_games);
     free(selected_games);
 
