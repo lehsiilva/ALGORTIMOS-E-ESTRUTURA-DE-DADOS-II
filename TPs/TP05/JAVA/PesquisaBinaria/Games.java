@@ -1,9 +1,8 @@
-package PesquisaBinaria;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -116,6 +115,9 @@ public class Games {
                 Games temp = lista.get(i);
                 lista.set(i, lista.get(j));
                 lista.set(j, temp);
+
+                movimentacoes += 3;
+
                 i++;
                 j--;
             }
@@ -133,11 +135,11 @@ public class Games {
             meio = (esq + dir) / 2;
             
             comparacoes++;
-            int cmp = x.trim().compareTo(lista.get(meio).getName());
+            int cmp = x.trim().compareTo(lista.get(meio).getName()); 
 
             if(cmp == 0){
                 resp = true;
-                esq = dir + 1;
+                esq = dir + 1; 
             } else if (cmp > 0) {
                 esq = meio + 1;
             } else {
@@ -146,17 +148,9 @@ public class Games {
         }
         return resp;
     }
-
-    public static void criarLog() {
-        try (PrintWriter fw = new PrintWriter(new FileWriter(log))) {
-            fw.write(matricula + "\t" + tempoEmSegundos + "\t" + comparacoes);
-        } catch (IOException e) {
-            System.err.println("Erro ao criar o arquivo de log: " + e.getMessage());
-        }
-    }
+    
 
     public static void main(String[] args) {
-        long inicioExecucao = System.currentTimeMillis();
         
         Scanner scanner = new Scanner(System.in);
 
@@ -183,30 +177,48 @@ public class Games {
             entrada = scanner.nextLine();
         }
         
+        Games.comparacoes = 0;
+        Games.movimentacoes = 0;
+
         if (!selecionados.isEmpty()) {
-            quicksort(selecionados, 0, selecionados.size() - 1);
+            long startTime = System.nanoTime();
+            
+            quicksort(selecionados, 0, selecionados.size() - 1); 
+            
+            long endTime = System.nanoTime();
+            Games.tempoEmSegundos = (endTime - startTime) / 1e6; // Para segundos
+        }
+
+        if (scanner.hasNextLine()) {
+            entrada = scanner.nextLine();
+        } else {
+            entrada = "FIM";
         }
         
-        entrada = scanner.nextLine();
         while (!entrada.equals("FIM")) {
             String nomeBuscado = entrada;
-
-            boolean encontrado = pesquisaBinaria(selecionados, nomeBuscado);
-                if(encontrado) {
-                    System.out.println("SIM");
-                } else {
-                    System.out.println("NAO");
-                }
             
-            entrada = scanner.nextLine();
+            boolean encontrado = pesquisaBinaria(selecionados, nomeBuscado); 
+            
+            if(encontrado) {
+                System.out.println(" SIM");
+            } else {
+                System.out.println(" NAO");
+            }
+            
+            if (scanner.hasNextLine()) {
+                entrada = scanner.nextLine();
+            } else {
+                entrada = "FIM";
+            }
         }
 
-        long fimExecucao = System.currentTimeMillis();
-        long tempoTotalMs = fimExecucao - inicioExecucao;
-        
-        tempoEmSegundos = tempoTotalMs / 1000.0;
-        
-        criarLog();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(Games.log))) {
+            bw.write(String.format("%d\t%d\t%d\t%.2f\n", Games.matricula, Games.comparacoes, Games.movimentacoes, Games.tempoEmSegundos));
+        }
+        catch(Exception e) {
+             System.err.println("Erro ao escrever no arquivo de log: " + e.getMessage());
+        }
 
         scanner.close();
     }

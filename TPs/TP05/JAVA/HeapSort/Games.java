@@ -423,8 +423,8 @@ public class Games {
         // Converte a lista para um array para ordenar
         Games[] selecionadosArray = selecionados.toArray(new Games[0]);
 
-        comparacoes = 0;
-        movimentacoes = 0;
+        Games.comparacoes = 0;
+        Games.movimentacoes = 0;
         
         long start = System.nanoTime();
         
@@ -433,14 +433,14 @@ public class Games {
         long end = System.nanoTime();
         
         // Cálculo do tempo em milissegundos
-        double tempo = (end - start) / 1e6;
+        Games.tempoEmSegundos = (end - start) / 1e6;
 
         for(int i = 0; i < selecionadosArray.length; i++) { //Imprime os jogos ordenados
             selecionadosArray[i].imprimir();
         }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(log))) {
-            bw.write(String.format("%s\t%d\t%d\t%.2f\n", matricula, comparacoes, movimentacoes, tempo));
+            bw.write(String.format("%s\t%d\t%d\t%.2f\n", Games.matricula, Games.comparacoes, Games.movimentacoes, Games.tempoEmSegundos));
         }
         catch(Exception e) {}
 
