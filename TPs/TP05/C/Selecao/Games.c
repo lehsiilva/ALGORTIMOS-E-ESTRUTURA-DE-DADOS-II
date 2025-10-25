@@ -1,365 +1,370 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
-#include <stdbool.h> 
 #include <time.h>
 
-#define MAX_GAMES 1000
-#define MAX_STR 64
-#define MAX_LINE 4096
-#define MAX_ARRAY_ITEM 50 
-#define CSV_PATH "/tmp/games.csv" 
-#define MATRICULA "874205" 
+#define MAX_GAMES 5000
+#define CSV_PATH "/tmp/games.csv"
 
-// Variáveis globais para o log
-long long comparacoes = 0;
-long long movimentacoes = 0;
-
-typedef struct {
+typedef struct Games{
     int id;
-    char name[MAX_STR];
-    char releaseDate[MAX_STR];
+    char name[150];
+    char releaseDate[15];
     int estimatedOwners;
     float price;
-    char supportedLanguages[MAX_ARRAY_ITEM][MAX_STR];
-    int supportedLanguagesCount;
+    char supportedLanguages[1000];
     int metacriticScore;
     float userScore;
     int achievements;
-    char publishers[MAX_ARRAY_ITEM][MAX_STR];
-    int publishersCount;
-    char developers[MAX_ARRAY_ITEM][MAX_STR];
-    int developersCount;
-    char categories[MAX_ARRAY_ITEM][MAX_STR];
-    int categoriesCount;
-    char genres[MAX_ARRAY_ITEM][MAX_STR];
-    int genresCount;
-    char tags[MAX_ARRAY_ITEM][MAX_STR];
-    int tagsCount;
+    char publishers[400];
+    char developers[400];
+    char categories[500];
+    char genres[500];
+    char tags[2000];
 } Games;
 
-// função para remover espaços em branco do início e do fim
-void trim(char *s) {
-    if (!s || *s == '\0'){
+Games all_games[MAX_GAMES];
+int total_games = 0;
+
+Games jogosSelecionados[MAX_GAMES];
+int contJogosSelecionados = 0;
+
+unsigned long long comparacoes = 0;
+unsigned long long movimentacoes = 0;
+
+clock_t startTime, endTime; // Variáveis para medir o tempo de execução
+
+// Função para converter o mês de string para número
+int parseMonth(char *month){
+
+    char minusculo[10];
+    int len = strlen(month);
+
+    if (len > 9){
+        len = 9;
+    }
+
+    for (int i = 0; i < len; i++){
+        minusculo[i] = tolower(month[i]);
+    }
+
+    minusculo[len] = '\0';
+
+    if (strstr(minusculo, "jan")){
+        return 1;
+    }
+    if (strstr(minusculo, "feb")){
+        return 2;
+    }
+    if (strstr(minusculo, "mar")){
+        return 3;
+    }   
+    if (strstr(minusculo, "apr")){
+        return 4;
+    }
+    if (strstr(minusculo, "may")){
+        return 5;
+    }
+    if (strstr(minusculo, "jun")){
+        return 6;
+    }
+    if (strstr(minusculo, "jul")){
+        return 7;
+    }
+    if (strstr(minusculo, "aug")){
+        return 8;
+    }
+    if (strstr(minusculo, "sep")){
+        return 9;
+    }
+    if (strstr(minusculo, "oct")){
+        return 10;
+    }
+    if (strstr(minusculo, "nov")){
+        return 11;
+    }
+    if (strstr(minusculo, "dec")){
+        return 12;
+    }
+    return 1;
+}
+
+// função para formatar a data
+void parseDate(char *entrada, char *saida){
+    if (entrada == NULL || strlen(entrada) == 0){
+        strcpy(saida, "01/01/1900");
         return;
     }
 
-    char *start = s;
-    while (*start && isspace((unsigned char)*start)){ //isspace para verificar espaços em branco, using char para evitar problemas com sinais negativos
+    char cleanentrada[50];
+    int j = 0;
+    int len = strlen(entrada);
+
+    for (int i = 0; i < len && j < 49; i++){
+        if (entrada[i] != '"'){
+            cleanentrada[j++] = entrada[i];
+        }
+    }
+
+    cleanentrada[j] = '\0';
+    char *start = cleanentrada;
+
+    while (isspace((unsigned char)*start)){ //isspace para verificar espaço em branco
         start++;
     }
-    if (start != s) {
-        memmove(s, start, strlen(start) + 1); //mmemove para mover a memória
-    }
-    int len = strlen(s);
-    while (len > 0 && isspace((unsigned char)s[len - 1])) {
-        s[--len] = '\0';
-    }
-}
 
-//função para remover caracteres específicos de uma string [], '
-void string_replace_chars(char *s) {
-    if (!s || *s == '\0'){
-        return;
+    char *fim = start + strlen(start) - 1;
+
+    while (fim > start && isspace((unsigned char)*fim)){
+        fim--;
     }
 
-    char *read_ptr = s;
-    char *write_ptr = s;
-
-    while (*read_ptr) {
-        if (*read_ptr != '[' && *read_ptr != ']' && *read_ptr != '\'') {
-            *write_ptr = *read_ptr;
-            write_ptr++;
-        }
-        read_ptr++;
-    }
-    *write_ptr = '\0';
-}
-
-void parseDate(const char *arqDate, char *releaseDate) {
-    if (arqDate == NULL || strlen(arqDate) == 0) {
-        strcpy(releaseDate, " "); 
-        return;
-    }
-    char dateCopy[100];
-    strncpy(dateCopy, arqDate, 99);
-    dateCopy[99] = '\0';
-    char *p = dateCopy;
-    char cleanedDate[100];
-    int j = 0;
-    while (*p) {
-        if (*p != '\"') {
-            cleanedDate[j++] = *p;
-        }
-        p++;
-    }
-    cleanedDate[j] = '\0';
-    trim(cleanedDate);
-    const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    char monthStr[10];
-    int day = 0, month = 0, year = 0;
-    
-    if (sscanf(cleanedDate, "%s %d, %d", monthStr, &day, &year) == 3) {
-        for (int i = 0; i < 12; i++) {
-            if (strncmp(monthStr, months[i], 3) == 0) {
-                month = i + 1;
-                int i = 12; // Sai do loop
-            }
-        }
-        if (month > 0 && year > 0) {
-            sprintf(releaseDate, "%02d/%02d/%04d", day, month, year);
-            return;
-        }
-    }
-    
-    if (sscanf(cleanedDate, "%s %d", monthStr, &year) == 2) {
-        for (int i = 0; i < 12; i++) {
-            if (strncmp(monthStr, months[i], 3) == 0) {
-                month = i + 1;
-                int i = 12; // Sai do loop
-            }
-        }
-        if (month > 0 && year > 0) {
-            sprintf(releaseDate, "01/%02d/%04d", month, year);
-            return;
-        }
-    }
-    
-    if (sscanf(cleanedDate, "%d", &year) == 1 && year >= 1900) {
-        sprintf(releaseDate, "01/01/%04d", year);
-        return;
-    }
-
-    strcpy(releaseDate, " "); 
-}
-
-int parseArrayField(const char *s, char array[][MAX_STR], int max) {
-    char temp[MAX_LINE];
+    fim[1] = '\0';
+    char temp[50];
+    strncpy(temp, start, 49); //strncpy para copiar a string
+    temp[49] = '\0';
+    char *parts[3];
     int count = 0;
-    if (!s || strlen(s) == 0){
-        return 0;
+    char *token = strtok(temp, " "); //strtok para separar a string em tokens
+
+    while (token && count < 3){
+        parts[count++] = token;
+        token = strtok(NULL, " ");
     }
 
-    strncpy(temp, s, sizeof(temp)-1); //strncpy para copiar a string
-    temp[sizeof(temp)-1] = '\0';
+    if (count == 3){
 
-    trim(temp);
-    string_replace_chars(temp); 
-    trim(temp);
+        int day = atoi(parts[1]); //atoi para converter string para int
+        int month = parseMonth(parts[0]); //parseMonth para converter mês de string para número
+        sprintf(saida, "%02d/%02d/%s", day, month, parts[2]);
 
-    char *tok = strtok(temp, ",");
-    while (tok != NULL && count < max) {
-        trim(tok);
-        
-        size_t len = strlen(tok); //size_t tipo de variável para tamanhos, strlen para obter o tamanho da string
-        if (len > 0 && tok[0] == '\"') memmove(tok, tok + 1, len);
-        len = strlen(tok);
-        if (len > 0 && tok[len - 1] == '\"') tok[len - 1] = '\0';
-        
-        trim(tok);
-        
-        if (strlen(tok) > 0) {
-            strncpy(array[count], tok, MAX_STR-1); 
-            array[count][MAX_STR-1] = '\0';
-            count++;
-        }
-        tok = strtok(NULL, ","); //strtok para separar a string em tokens
+    }else if (count == 2){
+
+        int month = parseMonth(parts[0]);
+        sprintf(saida, "01/%02d/%s", month, parts[1]);
+
+    }else if (count == 1){
+
+        sprintf(saida, "01/01/%s", parts[0]);
+
+    }else{
+
+        strcpy(saida, "01/01/1900");
     }
-    return count;
 }
 
-// função para ler uma linha CSV em campos
-int readCSVLine(char *line, char fields[][MAX_LINE], int maxFields) {
-    int fieldIndex = 0;
-    int aspas = 0; 
-    char *start = line;
-    char *p = line;
-
-    size_t len = strlen(line);
-    if (len > 0 && line[len - 1] == '\n') line[--len] = '\0';
-    if (len > 0 && line[len - 1] == '\r') line[--len] = '\0';
-
-    while (*p && fieldIndex < maxFields) {
-        bool avanca_p = true;
-
-        if (*p == '\"') {
-            
-            if (*(p + 1) == '\"' && aspas) { 
-                p += 2; 
-                avanca_p = false;
-            } else {
-                
-                aspas = !aspas; 
-            }
-        } else if (*p == ',' && !aspas) {
-            
-            int fieldLength = p - start;
-            if (fieldLength > MAX_LINE - 1) fieldLength = MAX_LINE - 1;
-            
-            strncpy(fields[fieldIndex], start, fieldLength);
-            fields[fieldIndex][fieldLength] = '\0';
-            trim(fields[fieldIndex]);
-            
-            fieldIndex++;
-            start = p + 1;
-        } 
-        
-        if (avanca_p) {
-            p++;
-        }
+int parseInt(char *str, int def){
+    if (str == NULL || strlen(str) == 0){
+        return def;
     }
 
-    
-    if (fieldIndex < maxFields) {
-        int fieldLength = strlen(start);
-        if (fieldLength > MAX_LINE - 1) fieldLength = MAX_LINE - 1;
-        
-        strncpy(fields[fieldIndex], start, fieldLength);
-        fields[fieldIndex][fieldLength] = '\0';
-        trim(fields[fieldIndex]);
-        
-        fieldIndex++;
-    }
-    return fieldIndex;
-}
-
-// função para criar um objeto Games a partir dos campos lidos
-Games Games_create(char fields[][MAX_LINE], int numFields) {
-    Games g; 
-    memset(&g, 0, sizeof(Games));
-    g.metacriticScore = -1;
-    g.userScore = -1.0f;
-    strcpy(g.releaseDate, " ");
-    if (numFields < 14) return g;
-    
-    // ID 
-    char cleanId[MAX_STR];
-    int k = 0;
-    for (int i = 0; fields[0][i] != '\0' && k < MAX_STR - 1; i++) {
-        if (isdigit((unsigned char)fields[0][i])) { //isdigit para verificar se é dígito
-            cleanId[k++] = fields[0][i];
-        }
-    }
-    cleanId[k] = '\0';
-    g.id = k > 0 ? atoi(cleanId) : 0; //atoi para converter string para int
-    
-    // Nome
-    strncpy(g.name, fields[1], MAX_STR-1); g.name[MAX_STR-1] = '\0';
-    
-    // Data de Lançamento
-    parseDate(fields[2], g.releaseDate);
-    
-    // Donos Estimados (estimatedOwners)
-    char cleanOwners[MAX_STR];
+    char clean[50];
     int j = 0;
-    for (int i = 0; fields[3][i] != '\0'; i++) {
-        if (isdigit((unsigned char)fields[3][i])) {
-            cleanOwners[j++] = fields[3][i];
+
+    for (int i = 0; str[i] && j < 49; i++){
+        if (isdigit(str[i])){ //isdigit para verificar se é dígito
+            clean[j++] = str[i];
         }
     }
-    cleanOwners[j] = '\0';
-    g.estimatedOwners = j > 0 ? atoi(cleanOwners) : 0;
+
+    clean[j] = '\0';
     
-    // Preço
-    if (strcasecmp(fields[4], "Free to Play") == 0) { // strcasecmp para comparação ignorando maiúsculas/minúsculas
-        g.price = 0.0f;
-    } else {
-        char priceTemp[MAX_STR];
-        strncpy(priceTemp, fields[4], MAX_STR-1);
-        for (char *c = priceTemp; *c; c++) {
-            if (*c == ',') *c = '.';
-        }
-        g.price = strtof(priceTemp, NULL); //strtof para converter string para float
-    }
-    
-    // Idiomas Suportados (supportedLanguages)
-    g.supportedLanguagesCount = parseArrayField(fields[5], g.supportedLanguages, MAX_ARRAY_ITEM);
-    
-    // Pontuação Metacritic (metacriticScore)
-    if (strlen(fields[6]) == 0) {
-        g.metacriticScore = -1;
-    } else {
-        g.metacriticScore = atoi(fields[6]);
-    }
-    
-    // Pontuação do Usuário (userScore)
-    char scoreTemp[MAX_STR];
-    strncpy(scoreTemp, fields[7], MAX_STR-1);
-    trim(scoreTemp); 
-    
-    if (strlen(scoreTemp) == 0 || strcmp(scoreTemp, "tbd") == 0) { 
-        g.userScore = -1.0f;
-    } else {
-        for (char *c = scoreTemp; *c; c++) {
-            if (*c == ',') *c = '.';
-        }
-        g.userScore = strtof(scoreTemp, NULL);
+    if (strlen(clean) == 0){
+        return def;
     }
 
-    // Conquistas (achievements)
-    if (strlen(fields[8]) == 0) {
-        g.achievements = 0;
-    } else {
-        g.achievements = atoi(fields[8]); 
-    }
-
-    // Publicadoras (publishers)
-    g.publishersCount = parseArrayField(fields[9], g.publishers, MAX_ARRAY_ITEM);
-    
-    // Desenvolvedoras (developers)
-    g.developersCount = parseArrayField(fields[10], g.developers, MAX_ARRAY_ITEM);
-    
-    // Categorias (categories)
-    g.categoriesCount = parseArrayField(fields[11], g.categories, MAX_ARRAY_ITEM);
-    
-    // Gêneros (genres)
-    g.genresCount = parseArrayField(fields[12], g.genres, MAX_ARRAY_ITEM);
-    
-    // Etiquetas (tags)
-    g.tagsCount = parseArrayField(fields[13], g.tags, MAX_ARRAY_ITEM);
-
-    return g;
+    return atoi(clean);
 }
 
-void Games_imprimir(const Games *g) {
+float parseFloat(char *str, float def){
 
-    printf("=> %d ## %s ## %s ## %d ## %.2f ## [", g->id, g->name, g->releaseDate, g->estimatedOwners, g->price);
-
-    for(int j = 0; j < g->supportedLanguagesCount; j++) {
-        printf("%s%s", g->supportedLanguages[j], (j < g->supportedLanguagesCount - 1) ? ", " : "");
+    if (str == NULL || strlen(str) == 0){
+        return def;
     }
-        printf("] ## %d ## %.2f ## %d ## [", g->metacriticScore, g->userScore, g->achievements);
 
-    for(int j = 0; j < g->publishersCount; j++){
-        printf("%s%s", g->publishers[j], (j < g->publishersCount - 1) ? ", " : "");
+    if (strstr(str, "Free to Play")){
+        return 0.0;
     }
-        printf("] ## [");
 
-    for(int j = 0; j < g->developersCount; j++){
-        printf("%s%s", g->developers[j], (j < g->developersCount - 1) ? ", " : "");
-    }
-        printf("] ## [");
+    float val = 0;
+    sscanf(str, "%f", &val);
 
-    for(int j = 0; j < g->categoriesCount; j++){
-        printf("%s%s", g->categories[j], (j < g->categoriesCount - 1) ? ", " : "");
-    }
-        printf("] ## [");
-
-    for(int j = 0; j < g->genresCount; j++){
-        printf("%s%s", g->genres[j], (j < g->genresCount - 1) ? ", " : "");
-    }
-        printf("] ## [");
-
-    for(int j = 0; j < g->tagsCount; j++){
-        printf("%s%s", g->tags[j], (j < g->tagsCount - 1) ? ", " : "");
-    }
-        printf("] ## \n");
+    return val;
 }
 
-// função para buscar um jogo pelo ID
-Games *buscar_jogo_por_id(Games *all_games, int total_games, int id) {
-    for (int i = 0; i < total_games; i++) {
+// funçao para converter user score
+float parseUserScore(char *str){
+
+    if (str == NULL || strlen(str) == 0 || strstr(str, "tbd")){
+        return -1.0;
+    }
+
+    float val = -1.0;
+    sscanf(str, "%f", &val);
+
+    return val;
+}
+
+void clearColchetes(char *entrada, char *saida){
+    if (entrada == NULL){
+        saida[0] = '\0';
+        return;
+    }
+
+    char temp[2000];
+    int k = 0;
+
+    for (int i = 0; entrada[i] && k < 1999; i++){
+
+        char c = entrada[i];
+
+        if (c != '[' && c != ']' && c != '\'' && c != '\"' && c != '\n' && c != '\r'){
+            temp[k++] = c;
+        }
+    }
+
+    temp[k] = '\0';
+    int inicio = 0;
+
+    while (temp[inicio] == ' ' || temp[inicio] == ','){
+        inicio++;
+    }
+
+    int fim = strlen(temp) - 1;
+
+    while (fim > inicio && (temp[fim] == ' ' || temp[fim] == ',')){
+        fim--;
+    }
+
+    int j = 0;
+
+    for (int i = inicio; i <= fim && j < 999; i++){
+
+        saida[j++] = temp[i];
+
+        if (temp[i] == ',' && i + 1 <= fim && temp[i + 1] != ' ' && temp[i + 1] != ','){
+            if (j < 999){
+                saida[j++] = ' ';
+            }
+        }
+    }
+
+    saida[j] = '\0';
+}
+
+// Função para ler um registro CSV e preencher a estrutura Games
+void parseCSVLine(char *line, Games *g){
+
+    char *campos[14];
+    int idx = 0;
+    int aspas = 0;
+    char temp[5000];
+    int j = 0;
+    strncpy(temp, line, 4999);
+    temp[4999] = '\0';
+    char *posAtual = temp;
+    char *campo_start = temp;
+
+    for (int i = 0; temp[i] && idx < 14; i++) {
+        if (temp[i] == '"') {
+            aspas = !aspas;
+        } else if (temp[i] == ',' && !aspas) {
+            temp[i] = '\0';
+            campos[idx++] = strdup(campo_start);//strdup para duplicar string
+            campo_start = temp + i + 1;
+        }
+    }
+
+    if (idx < 14){
+        campos[idx++] = strdup(campo_start);
+    }
+
+    for (int k = 0; k < idx; k++){
+        char *newline = strchr(campos[k], '\n'); //strchr para encontrar caractere na string
+        if (newline){
+            *newline = '\0';
+        }
+    }
+
+    if (idx < 14){
+        for (int k = 0; k < idx; k++){
+            free(campos[k]);
+        }
+        g->id = -1;
+        return;
+    }
+
+    char *namecampo = campos[1];
+
+    if (namecampo[0] == '"'){
+        namecampo++;
+        namecampo[strlen(namecampo) - 1] = '\0';
+    }
+
+    g->id = atoi(campos[0]);
+
+    strncpy(g->name, namecampo, 149);
+    g->name[149] = '\0';
+
+    parseDate(campos[2], g->releaseDate);
+
+    g->estimatedOwners = parseInt(campos[3], 0);
+
+    g->price = parseFloat(campos[4], 0.0);
+
+    clearColchetes(campos[5], g->supportedLanguages);
+
+    g->metacriticScore = parseInt(campos[6], -1);
+
+    g->userScore = parseUserScore(campos[7]);
+
+    g->achievements = parseInt(campos[8], 0);
+
+    clearColchetes(campos[9], g->publishers);
+
+    clearColchetes(campos[10], g->developers);
+
+    clearColchetes(campos[11], g->categories);
+
+    clearColchetes(campos[12], g->genres);
+
+    clearColchetes(campos[13], g->tags);
+
+    for (int k = 0; k < idx; k++){
+        free(campos[k]);
+    }
+}
+
+// Função para carregar todos os jogos do CSV
+void carregarAllJogos(){
+    FILE *f = fopen(CSV_PATH, "r");
+    if (!f){
+
+        printf("Erro ao abrir %s\n", CSV_PATH);
+        exit(1);
+    }
+
+    char line[5000];
+    fgets(line, sizeof(line), f);
+
+    while (fgets(line, sizeof(line), f)){
+
+        if (strlen(line) > 10){
+            parseCSVLine(line, &all_games[total_games]);
+
+            if (all_games[total_games].id != -1){
+                total_games++;
+            }
+        }
+    }
+
+    fclose(f);
+}
+
+// Função para buscar um jogo pelo ID
+Games *buscar_jogo_por_id(int id){
+    for (int i = 0; i < total_games; i++){
         if (all_games[i].id == id){
             return &all_games[i];
         }
@@ -367,203 +372,89 @@ Games *buscar_jogo_por_id(Games *all_games, int total_games, int id) {
     return NULL;
 }
 
-// função para ler um registro CSV
-int ler_registro_csv(FILE *fp, char *buffer, size_t bufsize) {
-    buffer[0] = '\0';
-    char tmp[MAX_LINE];
-
-    if (fgets(tmp, sizeof(tmp), fp) == NULL) return 0;
-    strncpy(buffer, tmp, bufsize - 1);
-    buffer[bufsize - 1] = '\0';
-
-    // conta aspas para verificar se o registro está completo (par = completo)
-    int contAspas = 0;
-    for (char *p = buffer; *p; p++){
-        if (*p == '\"'){
-            contAspas++;
-    }   }
-    // Continua lendo linhas enquanto contAspas for ímpar E fgets for bem-sucedido
-    while ((contAspas % 2) != 0 && fgets(tmp, sizeof(tmp), fp) != NULL) {
-        size_t remaining = bufsize - strlen(buffer) - 1;
-        if (remaining > 0){
-            strncat(buffer, tmp, remaining); // strncat para concatenar strings com limite
-        }
-        for (char *p = tmp; *p; p++){
-            if (*p == '\"'){
-                contAspas++;
-        }   }
-    }
-
-    // remove \r\n finais
-    size_t len = strlen(buffer);
-    while (len > 0 && (buffer[len-1] == '\n' || buffer[len-1] == '\r')){
-        buffer[--len] = '\0';
-    }
-    return (buffer[0] != '\0');
+void Games_imprimir(Games *g){
+    printf("=> %d ## %s ## %s ## %d ## %.2f ## [%s] ## %d ## %.1f ## %d ## [%s] ## [%s] ## [%s] ## [%s] ## [%s] ##\n",
+           g->id, g->name, g->releaseDate, g->estimatedOwners, g->price,
+           g->supportedLanguages, g->metacriticScore, g->userScore, g->achievements,
+           g->publishers, g->developers, g->categories, g->genres, g->tags);
 }
 
-int Games_compare_name(const Games *g1, const Games *g2) {
-    comparacoes++;
-    return strcmp(g1->name, g2->name);
-}
+//Criar arquivo log
+void createLog(){
+    char *matricula = "874205";
+    char fileName[100];
+    sprintf(fileName, "%s_selecao.txt", matricula);
+    double tempo = ((double)(endTime - startTime)) / CLOCKS_PER_SEC;
 
-void swap(Games *g1, Games *g2) {
-    Games temp = *g1;
-    *g1 = *g2;
-    *g2 = temp;
-    movimentacoes += 3;
-}
+    FILE *f = fopen(fileName, "w");
 
-void selectionSort(Games arr[], int n) {
-    int i, j, min_idx;
-
-    for (i = 0; i < n - 1; i++) {
-        // Encontra o elemento mínimo no array não ordenado
-        min_idx = i;
-        for (j = i + 1; j < n; j++) {
-            // Compara os nomes (chave de pesquisa)
-            if (Games_compare_name(&arr[j], &arr[min_idx]) < 0) {
-                min_idx = j;
-            }
-        }
-
-        // Troca o elemento mínimo encontrado com o primeiro elemento
-        if (min_idx != i) {
-            swap(&arr[min_idx], &arr[i]);
-        }
-    }
-}
-
-void criar_log(double tempo_execucao) {
-    FILE *log_fp = fopen(MATRICULA "_selecao.txt", "w");
-    if (log_fp == NULL) {
-        fprintf(stderr, "Erro ao criar arquivo de log.\n");
+    if (f == NULL){
+        printf("Erro ao criar arquivo de log.\n");
         return;
     }
-    fprintf(log_fp, "%s\t%lld\t%lld\t%.2lf\n", MATRICULA, comparacoes, movimentacoes, tempo_execucao);
-    fclose(log_fp);
+
+    fprintf(f, "%s\t%llu\t%llu\t%.6f\n", matricula, comparacoes, movimentacoes, tempo);
+    fclose(f);
 }
 
-int main() {
-    FILE *fp = fopen(CSV_PATH, "r"); 
-    if(fp == NULL) {
-        printf("Erro ao abrir arquivo %s\n", CSV_PATH);
-        return 1;
+void swap(int i, int j){
+    movimentacoes += 3;
+    Games temp = jogosSelecionados[i];
+    jogosSelecionados[i] = jogosSelecionados[j];
+    jogosSelecionados[j] = temp;
+}
+
+//Comparar jogos pela chave de pesquisa (name)
+int CompararJogos(Games g1, Games g2){
+    comparacoes++;
+    int nameCmp = strcmp(g1.name, g2.name);
+
+    if (nameCmp != 0){
+        return nameCmp;
     }
 
-    // Alocação inicial para todos os jogos
-    int all_capacity = 4096;
-    Games *all_games = (Games *)malloc(all_capacity * sizeof(Games));
-    if (all_games == NULL) {
-        printf("Erro: Falha ao alocar memoria para os jogos.\n");
-        fclose(fp);
-        return 1;
-    }
+    comparacoes++;
 
-    int total_games = 0;
-    char line[MAX_LINE];
-    char fields[14][MAX_LINE];
-    bool reading_ok = true; // Novo flag para controlar falhas de alocação
+    return g1.id - g2.id;
+}
 
-    // Pula o cabeçalho 
-    if(!ler_registro_csv(fp, line, sizeof(line))) {
-        fclose(fp);
-        free(all_games);
-        return 1;
-    }
-
-    // Leitura e criação de todos os objetos Games 
-    while (reading_ok && ler_registro_csv(fp, line, sizeof(line))) {
-        int numFields = readCSVLine(line, fields, 14);
-        
-        if (numFields == 14) {
-            
-            if (total_games >= all_capacity) {
-                int new_cap = all_capacity * 2;
-                Games *tmp = (Games *)realloc(all_games, new_cap * sizeof(Games));
-                if (tmp == NULL) {
-                    fprintf(stderr, "Erro: realloc falhou em aumentar all_games\n");
-                    reading_ok = false; 
-                } else {
-                    all_games = tmp;
-                    all_capacity = new_cap;
-                }
-            }
-            if (reading_ok) { 
-                all_games[total_games++] = Games_create(fields, numFields);
-            }
-
-        } 
-    }
-
-    fclose(fp);
-
-    // Leitura dos IDs a serem buscados
-    char input[2000];
-    int idBuscado = -1;
-    int selected_ids[MAX_GAMES]; 
-    int selected_ids_count = 0;
-
-
-    while(fgets(input, sizeof(input), stdin) != NULL) { //Enquanto houver linhas para ler
-        input[strcspn(input, "\n")] = '\0';
-        trim(input);
-        
-        if (sscanf(input, "%d", &idBuscado) == 1) {
-            if (selected_ids_count < MAX_GAMES) {
-                selected_ids[selected_ids_count++] = idBuscado;
+// Ordena pela chave de pesquisa (name)
+void selectionSort(){
+    for (int i = 0; i < (contJogosSelecionados - 1); i++){
+        int menor = i;
+        for (int j = (i + 1); j < contJogosSelecionados; j++){
+            if (CompararJogos(jogosSelecionados[j], jogosSelecionados[menor]) < 0){
+                menor = j;
             }
         }
+        swap(i, menor);
     }
-    
-    // Criação e preenchimento do array de jogos selecionados
-    Games *selected_games = (Games *)malloc(selected_ids_count * sizeof(Games));
-    if (selected_games == NULL) {
-        printf("Erro: Falha ao alocar memoria para os jogos selecionados.\n");
-        free(all_games);
-        return 1;
-    }
+}
 
-    int selected_games_count = 0;
-    // Percorre os IDs na ORDEM 
-    for(int i = 0; i < selected_ids_count; i++) {
-        idBuscado = selected_ids[i];
+int main(){
 
-        Games *found = buscar_jogo_por_id(all_games, total_games, idBuscado); // buscar_jogo_por_id
-        if (found != NULL) {
-            // Copia o jogo, mantendo a ordem de entrada.
-            selected_games[selected_games_count++] = *found; 
-        } 
-    }
-    
-    clock_t start, end;
-    double tempoExecucao;
+    carregarAllJogos();
+    char input[50];
+    scanf("%s", input);
 
-    comparacoes = 0;
-    movimentacoes = 0;
-
-    start = clock();
-
-    selectionSort(selected_games, selected_games_count); 
-
-    end = clock();
-
-    tempoExecucao = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC;
-
-    criar_log(tempoExecucao);
-
-    for(int i = 0; i < selected_games_count; i++) {
-        Games_imprimir(&selected_games[i]);
-    }
-
-    FILE *log = fopen("874205_quicksort.txt", "w");
-        if (log) {
-            fprintf(log, MATRICULA"\t%d\t%.2f\n", comparacoes, movimentacoes, tempoExecucao);
-            fclose(log);
+    while (strcmp(input, "FIM") != 0) { //busca o jogo pelo ID e adiciona ao array de jogos selecionados
+        int id = atoi(input);
+        Games *g = buscar_jogo_por_id(id);
+        if (g) {
+            jogosSelecionados[contJogosSelecionados] = *g;
+            contJogosSelecionados++;
         }
+        scanf("%s", input); 
+    }
 
-    free(all_games);
-    free(selected_games);
+    startTime = clock();
+    selectionSort();
+    endTime = clock();
+    createLog();
+
+    for (int i = 0; i < contJogosSelecionados; i++){
+        Games_imprimir(&jogosSelecionados[i]);
+    }
 
     return 0;
 }
