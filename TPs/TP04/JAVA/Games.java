@@ -335,7 +335,7 @@ public class Games {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        carregarCSV(arquivo);
+        carregarCSV(arquivo); 
         List<String> lines = Games.getcsv();
 
         Games[] games = new Games[lines.size()];

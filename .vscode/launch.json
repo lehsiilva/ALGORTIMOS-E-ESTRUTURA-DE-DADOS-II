@@ -120,8 +120,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/letic/Desktop/GitHub/ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II/Exercicios-JAVA/Listas/ListaSimples",
-      "program": "c:/Users/letic/Desktop/GitHub/ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II/Exercicios-JAVA/Listas/ListaSimples/build/Debug/outDebug",
+      "cwd": "c:/Users/letic/Desktop/GitHub/ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II/TPs/TP06/C/Pilha",
+      "program": "c:/Users/letic/Desktop/GitHub/ALGORTIMOS-E-ESTRUTURA-DE-DADOS-II/TPs/TP06/C/Pilha/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
