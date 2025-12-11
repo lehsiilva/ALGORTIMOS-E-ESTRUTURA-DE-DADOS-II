@@ -2,8 +2,8 @@ import java.util.Scanner;
 
 class No{
     public int valor;
-    public No esq;
-    public No dir;
+    public Main esq;
+    public Main dir;
 
     public No(int valor){
         this.valor = valor;
@@ -18,7 +18,7 @@ class No{
 
 class Arvore{
 
-    private No raiz;
+    private Main raiz;
 
     public Arvore(){
         this.raiz = null;
@@ -29,9 +29,9 @@ class Arvore{
         raiz = inserirRec(raiz,x);
     }
 
-    private No inserirRec(No raizAtual, int x){
+    private Main inserirRec(Main raizAtual, int x){
         if(raizAtual == null){ //condição de parada
-            return new No(x);
+            return new Main(x);
         }
 
         if(x > raizAtual.valor){
@@ -45,20 +45,20 @@ class Arvore{
 
     public void inserirPai(int x) {
         if (raiz == null) {
-            raiz = new No(x); // raiz da árvore
+            raiz = new Main(x); // raiz da árvore
         } else {
             inserirRecPai(raiz, null, x);
         }
     }
 
     // Inserção recursiva com passagem de pai
-    private void inserirRecPai(No atual, No pai, int x) {
+    private void inserirRecPai(Main atual, Main pai, int x) {
         if (atual == null) {
             // insere novo nó no filho correto do pai
             if (x < pai.valor) {
-                pai.esq = new No(x);
+                pai.esq = new Main(x);
             } else {
-                pai.dir = new No(x);
+                pai.dir = new Main(x);
             }
             return;
         }
@@ -74,7 +74,7 @@ class Arvore{
         return pesquisarRec(raiz, x);
     }
 
-    private boolean pesquisarRec(No raizAtual, int x){
+    private boolean pesquisarRec(Main raizAtual, int x){
         if(raizAtual == null){
             return false;
         }
@@ -95,7 +95,7 @@ class Arvore{
         System.out.println();
     }
 
-    private void caminharCentralRec(No raizAtual){
+    private void caminharCentralRec(Main raizAtual){
         if(raizAtual != null){
             caminharCentralRec(raizAtual.esq);
             System.out.println(raizAtual.valor + " ");
@@ -108,7 +108,7 @@ class Arvore{
         System.out.println();
     }
 
-    private void caminharPreRec(No raizAtual){
+    private void caminharPreRec(Main raizAtual){
         if(raizAtual != null){
             System.out.println(raizAtual.valor + " ");
             caminharPreRec(raizAtual.esq);
@@ -121,7 +121,7 @@ class Arvore{
         System.out.println();
     }
 
-    private void caminharPosRec(No raizAtual){
+    private void caminharPosRec(Main raizAtual){
         if(raizAtual != null){
             caminharPosRec(raizAtual.esq);
             caminharPosRec(raizAtual.dir);
@@ -133,7 +133,7 @@ class Arvore{
         removerRec(raiz,valor);
     }
 
-    private No removerRec(No raizAtual, int valor){
+    private Main removerRec(Main raizAtual, int valor){
         if (raizAtual == null) {
             return null; // valor não encontrado
         }
@@ -168,8 +168,8 @@ class Arvore{
     }
 
 
-    public int maiorEsq(No raizAtual) {
-        No atual = raizAtual;
+    public int maiorEsq(Main raizAtual) {
+        Main atual = raizAtual;
             while (atual.dir != null) {
                 atual = atual.dir;
             }
