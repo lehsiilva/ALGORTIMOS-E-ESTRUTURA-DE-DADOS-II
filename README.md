@@ -13,6 +13,12 @@ O objetivo é praticar, consolidar e aprimorar os conhecimentos adquiridos nas a
 - Algoritmos de Ordenação (Seleção, Bolha, Inserção, ShellSort, QuickSort, HeapSort, MergeSort, CountingSort, RadixSort)
 - Estruturas de Dados Básicas Lineares (Fila, Lista e Pilha)
 - Estruturas de Dados Básicas Flexíveis (Fila, Lista e Pilha)
+- Árvore binária
+- Árvore AVL
+- Árvore 2-3-4
+- Árvore Alvinegra
+- Tabela Hash (tabela direta, indireta com lista, rehash)
+- Árvore TRIE
 
 ## 🎯 Objetivo  
 Este repositório serve como espaço de estudo e prática, registrando minha evolução na disciplina e aplicando os conceitos em códigos funcionais.  
